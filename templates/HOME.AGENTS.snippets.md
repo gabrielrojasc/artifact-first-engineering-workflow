@@ -48,11 +48,3 @@ Examples for scratch roots include `~/tmp/_ai_scratch`, `~/scratch/_ai`, and `/t
 - Use scratch for copied logs, rough notes, temporary summaries, and intermediate output.
 - Scratch is not a second documentation system.
 ```
-
-## Optional Compatibility Note
-
-If a tool expects `CLAUDE.md`, users may create:
-
-```text
-$HOME/.claude/CLAUDE.md -> $HOME/AGENTS.md
-```

@@ -70,16 +70,6 @@ engineering-context/
 
 `workflow-state.md` is optional. Use it only when the work is complex enough that coordination state should live outside the plan itself.
 
-## Optional Claude Compatibility
-
-If you want one top-level guidance file for tools that also read `CLAUDE.md`, create:
-
-```text
-$HOME/.claude/CLAUDE.md -> $HOME/AGENTS.md
-```
-
-That is user-level compatibility guidance only. It is not part of the core skill logic.
-
 ## Copy-Paste Snippet
 
 Adapt this snippet to your workstation:

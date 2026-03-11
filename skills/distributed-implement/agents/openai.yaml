@@ -1,3 +1,0 @@
-interface:
-  display_name: "Distributed Implement"
-  short_description: "execute approved PI or RPI plans phase by phase and route mismatches back to planning or research"

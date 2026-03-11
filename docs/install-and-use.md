@@ -7,9 +7,7 @@ This package is designed to be cloned, read, and copied from. It is intentionall
 1. Clone this repo into a location you control.
 2. Read [`docs/home-agents-guide.md`](home-agents-guide.md) and adapt the `$HOME/AGENTS.md` snippet to your workstation.
 3. Create or update `$HOME/AGENTS.md` with your chosen repo root, shared `engineering-context` root, and scratch root.
-4. Optionally create `$HOME/.claude/CLAUDE.md` as a symlink to `$HOME/AGENTS.md`.
-5. Copy the canonical skills from [`skills/`](../skills/) into your agent skill location.
-6. If you use Claude subagents, copy the adapter files from [`integrations/claude/agents/`](../integrations/claude/agents/) into `$HOME/.claude/agents/`.
+4. Copy the canonical skills from [`skills/`](../skills/) into your agent skill location.
 
 ## Installing The Skills
 
@@ -22,10 +20,7 @@ The canonical workflow definitions live in these folders:
 Each skill contains:
 
 - `SKILL.md` as the canonical workflow definition
-- `agents/openai.yaml` for OpenAI-compatible metadata
 - local `references/` files so the skill can travel independently
-
-The Claude adapter files are mirrors of the same workflow. They are intentionally kept separate so `skills/` remains the main source of truth.
 
 ## Repo-Local Docs Setup
 

@@ -41,11 +41,6 @@ Canonical skill sources live in [`skills/`](skills/):
 - [`distributed-plan`](skills/distributed-plan/SKILL.md)
 - [`distributed-implement`](skills/distributed-implement/SKILL.md)
 
-Tool adapters live alongside the canonical skills:
-
-- OpenAI-compatible metadata in each skill's `agents/openai.yaml`
-- Claude-compatible subagent files under [`integrations/claude/agents/`](integrations/claude/agents/)
-
 ## What This Workflow Optimizes For
 
 - Repository-local, versioned artifacts as the main source of truth
