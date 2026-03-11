@@ -41,7 +41,9 @@ Choose `full phased plan` when:
 - ownership or boundaries matter
 - the task is ambiguous
 
-Supported workflow paths include `PI`, `RPI`, `R -> R -> P -> I`, and `P -> R -> P -> I`.
+Common workflow paths include `PI`, `RPI`, `R -> R -> P -> I`, `P -> R -> P -> I`, `I -> P`, and `I -> R`.
+
+These are recommended patterns, not an exhaustive set of allowed transitions.
 
 ## Research Stop Condition
 

@@ -114,7 +114,7 @@ Use `RPI` when:
 - ownership or boundaries matter
 - the task is ambiguous
 
-The workflow is conditional, not rigid. Supported paths include:
+The workflow is conditional, not rigid. Common workflow paths include:
 
 - `PI`
 - `RPI`
@@ -122,6 +122,8 @@ The workflow is conditional, not rigid. Supported paths include:
 - `P -> R -> P -> I`
 - `I -> P`
 - `I -> R`
+
+These are recommended patterns, not an exhaustive set of allowed transitions.
 
 ## Running The Workflow
 
