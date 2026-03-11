@@ -179,7 +179,7 @@ Scratch is not a second documentation system. If something will matter later, co
 
 ## Why This Layout
 
-This package follows the same broad direction described in OpenAI's [Harness engineering](https://openai.com/index/harness-engineering) article and HumanLayer's [Advanced Context Engineering](https://www.humanlayer.dev/docs/workshop) material:
+This package follows the same broad direction described in OpenAI's [Harness engineering](https://openai.com/index/harness-engineering) article and HumanLayer's [advanced-context-engineering-for-coding-agents](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents) repo:
 
 - use repository-visible artifacts instead of hidden context
 - make plans durable

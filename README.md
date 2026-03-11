@@ -22,7 +22,6 @@ Users should adapt directory roots to their own setup. The docs use examples suc
 This workflow is explicitly inspired by:
 
 - OpenAI's [Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering)
-- HumanLayer's [Advanced Context Engineering for coding agents workshop](https://www.humanlayer.dev/docs/workshop)
 - HumanLayer's [advanced-context-engineering-for-coding-agents](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents)
 
 The influence shows up in artifact-first working habits, planning discipline, context compaction, and the idea that repository-local, versioned knowledge should be the main system of record.
