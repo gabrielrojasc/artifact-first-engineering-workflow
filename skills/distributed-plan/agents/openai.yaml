@@ -1,0 +1,3 @@
+interface:
+  display_name: "Distributed Plan"
+  short_description: "choose PI or RPI and produce a plan or research request with explicit verification and rollout notes"

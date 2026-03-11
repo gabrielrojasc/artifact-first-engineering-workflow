@@ -1,0 +1,42 @@
+# Phased Plan: <topic>
+
+## Goal
+
+Describe the intended outcome.
+
+## Scope
+
+- In scope
+
+## Non-goals
+
+- Out of scope
+
+## Phase status
+
+- Phase 1: not started
+
+## Phases
+
+### Phase 1
+
+- Repos and services touched
+- Ownership notes
+- Contract impact
+- Rollout order
+
+## Automated verification
+
+- Check 1
+
+## Manual verification
+
+- Check 1
+
+## Rollback
+
+- Containment or rollback step
+
+## Exit criteria
+
+- Criterion 1
