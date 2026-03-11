@@ -8,9 +8,9 @@ Task: add a missing timeout to one HTTP client in a single service repo.
 
 Recommended path:
 
-1. `distributed-plan` produces a mini-plan in the repo's `docs/exec-plans/active/`.
+1. `af-plan` produces a mini-plan in the repo's `docs/exec-plans/active/`.
 2. The plan lists the target files, automated checks, and manual verification.
-3. `distributed-implement` executes the change.
+3. `af-implement` executes the change.
 4. The completed plan moves to `docs/exec-plans/completed/` if the repo treats even small plans as durable records.
 
 Why PI fits:
@@ -26,12 +26,12 @@ Task: add a new header requirement between an API gateway repo and two downstrea
 
 Recommended path:
 
-1. `distributed-research` runs in boundary tracing mode and writes a research artifact under `engineering-context/active/header-rollout/research/`.
+1. `af-research` runs in boundary tracing mode and writes a research artifact under `engineering-context/active/header-rollout/research/`.
 2. The research identifies the owning repo for the header contract, the downstream consumers, and the rollout constraints.
-3. `distributed-plan` creates a phased RPI plan under `engineering-context/active/header-rollout/plans/`.
+3. `af-plan` creates a phased RPI plan under `engineering-context/active/header-rollout/plans/`.
 4. The plan separates producer-first and consumer rollout steps and records automated and manual verification.
 5. `workflow-state.md` is added because the work spans multiple repos and rollout coordination matters.
-6. `distributed-implement` executes one phase at a time and updates the status artifact.
+6. `af-implement` executes one phase at a time and updates the status artifact.
 
 Why RPI fits:
 
@@ -45,7 +45,7 @@ Task: implement an event schema extension that was planned as a two-repo change.
 
 What happens:
 
-1. `distributed-implement` starts phase 1 and discovers the emitting service is not the real schema owner.
+1. `af-implement` starts phase 1 and discovers the emitting service is not the real schema owner.
 2. If the mismatch is only a code-detail mismatch, the workflow returns to planning to revise the phase sequence.
 3. If the mismatch shows that ownership or dependency understanding was wrong, the workflow returns to research.
 4. A new research pass documents the actual schema owner, lagging consumers, and rollout constraints.

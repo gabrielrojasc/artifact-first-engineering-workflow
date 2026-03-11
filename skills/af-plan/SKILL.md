@@ -1,9 +1,9 @@
 ---
-name: distributed-plan
-description: create mini-plans for PI work and phased plans for RPI work in distributed systems. use when an agent must turn a task or research artifact into an actionable plan while stopping for more research if ownership, repo scope, contract dependencies, or rollout dependencies are still unclear.
+name: af-plan
+description: create mini-plans for PI work and phased plans for RPI work in an artifact-first engineering workflow. use when an agent must turn a task or research artifact into an actionable plan while stopping for more research if ownership, repo scope, contract dependencies, or rollout dependencies are still unclear.
 ---
 
-# Distributed Plan
+# Artifact-First Plan
 
 ## Overview
 

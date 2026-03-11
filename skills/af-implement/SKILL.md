@@ -1,9 +1,9 @@
 ---
-name: distributed-implement
-description: execute an approved distributed systems plan phase by phase with explicit exits back to planning or research. use when an agent must implement from a plan, keep automated and manual verification separate, and stop clearly when code, ownership, boundary, or dependency reality diverges from the plan.
+name: af-implement
+description: execute an approved artifact-first plan phase by phase with explicit exits back to planning or research. use when an agent must implement from a plan, keep automated and manual verification separate, and stop clearly when code, ownership, boundary, or dependency reality diverges from the plan.
 ---
 
-# Distributed Implement
+# Artifact-First Implement
 
 ## Overview
 

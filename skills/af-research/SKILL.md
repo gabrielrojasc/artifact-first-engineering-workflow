@@ -1,9 +1,9 @@
 ---
-name: distributed-research
-description: analyze one or more repositories in a distributed system and produce a compact, evidence-backed research artifact before planning or implementation. use when an agent needs repo discovery, boundary tracing, contract validation, or rollout and environment validation without guessing about current system behavior.
+name: af-research
+description: analyze one or more repositories and produce a compact, evidence-backed research artifact for artifact-first engineering work. use when an agent needs repo discovery, boundary tracing, contract validation, or rollout and environment validation without guessing about current system behavior.
 ---
 
-# Distributed Research
+# Artifact-First Research
 
 ## Overview
 

@@ -1,6 +1,6 @@
-# Distributed Agent Workflow
+# Artifact-First Engineering Workflow
 
-`distributed-agent-workflow` packages a reusable RPI-style workflow for distributed systems work. It is primarily a filesystem layout, a set of Markdown manuals, and installable skills that help agents and engineers work from durable artifacts instead of chat history.
+This repo packages a reusable artifact-first engineering workflow for repo-local and cross-repo work. It is primarily a filesystem layout, a set of Markdown manuals, and installable skills that help agents and engineers work from durable artifacts instead of chat history.
 
 This repo has three parts:
 
@@ -8,11 +8,12 @@ This repo has three parts:
 2. A practical installation and usage manual for the workflow
 3. Skill source folders you can copy into agent setups
 
-The package uses `distributed` as the top-level term:
+The package uses `artifact-first` as the top-level term:
 
-- `distributed` = the workflow family and package
-- `service` = a repo-owned runtime component
+- `artifact-first` = the workflow family and package
+- `repo-local` = work contained within one repo
 - `cross-repo` = work that spans more than one repo
+- `service` = a repo-owned runtime component
 
 Users should adapt directory roots to their own setup. The docs use examples such as `~/git`, `~/src`, `~/code`, `~/work/repos`, `~/git/engineering-context`, and `~/tmp/_ai_scratch`, but none of those paths are mandatory.
 
@@ -37,9 +38,11 @@ The influence shows up in artifact-first working habits, planning discipline, co
 
 Canonical skill sources live in [`skills/`](skills/):
 
-- [`distributed-research`](skills/distributed-research/SKILL.md)
-- [`distributed-plan`](skills/distributed-plan/SKILL.md)
-- [`distributed-implement`](skills/distributed-implement/SKILL.md)
+The `af` prefix stands for `artifact-first`.
+
+- [`af-research`](skills/af-research/SKILL.md)
+- [`af-plan`](skills/af-plan/SKILL.md)
+- [`af-implement`](skills/af-implement/SKILL.md)
 
 ## What This Workflow Optimizes For
 

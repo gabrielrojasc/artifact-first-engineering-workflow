@@ -1,4 +1,4 @@
-# Distributed Boundary Checklist
+# Artifact-First Boundary Checklist
 
 Use this checklist before declaring research complete.
 

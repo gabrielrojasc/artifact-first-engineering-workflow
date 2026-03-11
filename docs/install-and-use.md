@@ -1,6 +1,6 @@
 # Install And Use
 
-This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact layout and a set of skills that teach branching PI and RPI workflows.
+This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills that teach branching PI and RPI workflows.
 
 ## Installation
 
@@ -13,9 +13,9 @@ This package is designed to be cloned, read, and copied from. It is intentionall
 
 The canonical workflow definitions live in these folders:
 
-- [`skills/distributed-research/`](../skills/distributed-research/)
-- [`skills/distributed-plan/`](../skills/distributed-plan/)
-- [`skills/distributed-implement/`](../skills/distributed-implement/)
+- [`skills/af-research/`](../skills/af-research/)
+- [`skills/af-plan/`](../skills/af-plan/)
+- [`skills/af-implement/`](../skills/af-implement/)
 
 Each skill contains:
 
