@@ -2,6 +2,8 @@
 
 This repo packages a reusable artifact-first engineering workflow for repo-local and cross-repo work. It is primarily a filesystem layout, a set of Markdown manuals, and installable skills that help agents and engineers work from durable artifacts instead of chat history.
 
+`Artifact-first` means the durable artifact comes before the conversation. Research notes, plans, decision records, checklists, and service docs are the primary working surface; chat is only a way to produce or refine those artifacts, not the long-term system of record.
+
 In this workflow, `PI` means `Plan -> Implement` and `RPI` means `Research -> Plan -> Implement`.
 
 This repo has three parts:

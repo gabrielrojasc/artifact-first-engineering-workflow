@@ -2,6 +2,8 @@
 
 This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills that teach branching `PI` (`Plan -> Implement`) and `RPI` (`Research -> Plan -> Implement`) workflows.
 
+Here, `artifact-first` means the durable file is the source of truth. Plans, research notes, decisions, and reference docs should exist as versioned artifacts that agents and humans can reuse; chat should support those artifacts, not replace them.
+
 ## Installation
 
 1. Clone this repo into a location you control. A git worktree checkout is fine and works well for updates.
