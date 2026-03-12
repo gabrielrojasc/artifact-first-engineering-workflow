@@ -6,7 +6,7 @@ This repo has three parts:
 
 1. Guidance for what to add to `$HOME/AGENTS.md`
 2. A practical installation and usage manual for the workflow
-3. Skill source folders you can copy into agent setups
+3. Skill source folders you can install into agent setups
 
 The package uses `artifact-first` as the top-level term:
 
@@ -28,6 +28,7 @@ The influence shows up in artifact-first working habits, planning discipline, co
 
 ## Start Here
 
+- Run `scripts/install.sh` from this repo checkout or worktree to install the starter home files and live skill symlinks.
 - [$HOME/AGENTS.md guidance](docs/home-agents-guide.md)
 - [Install and use manual](docs/install-and-use.md)
 - [Workflow examples](docs/workflow-examples.md)

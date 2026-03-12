@@ -4,10 +4,35 @@ This package is designed to be cloned, read, and copied from. It is intentionall
 
 ## Installation
 
-1. Clone this repo into a location you control.
-2. Read [`docs/home-agents-guide.md`](home-agents-guide.md) and adapt the `$HOME/AGENTS.md` snippet to your workstation.
-3. Create or update `$HOME/AGENTS.md` with your chosen repo root, shared `engineering-context` root, and scratch root.
-4. Copy the canonical skills from [`skills/`](../skills/) into your agent skill location.
+1. Clone this repo into a location you control. A git worktree checkout is fine and works well for updates.
+2. From inside that checkout or worktree, run:
+
+```bash
+scripts/install.sh
+```
+
+3. Read [`docs/home-agents-guide.md`](home-agents-guide.md) and adapt the installed `~/.codex/AGENTS.md` guidance to your workstation.
+4. If the installer reports existing files or skill destinations, review the relevant docs and merge the rules manually instead of overwriting those paths.
+
+## What The Installer Does
+
+The installer is intentionally conservative. It uses the current repo checkout as the live source of truth so future updates to this repo are reflected through symlinks.
+
+It will:
+
+- detect the current repo root from the directory where you run it
+- create `~/.agents/skills/`, `~/.codex/`, and `~/.claude/` if they do not already exist
+- create per-skill symlinks in `~/.agents/skills/` that point back to this repo's [`skills/`](../skills/) directories
+- copy [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) to `~/.codex/AGENTS.md` if that file does not already exist
+- create `~/.claude/CLAUDE.md` as a symlink to `~/.codex/AGENTS.md` if it does not already exist
+
+It will not:
+
+- overwrite an existing `~/.codex/AGENTS.md`
+- overwrite an existing `~/.claude/CLAUDE.md`
+- replace an existing path under `~/.agents/skills/`
+
+When those paths already exist, the installer prints a warning and tells you which doc to review so you can merge the workflow rules yourself.
 
 ## Installing The Skills
 
@@ -21,6 +46,8 @@ Each skill contains:
 
 - `SKILL.md` as the canonical workflow definition
 - local `references/` files so the skill can travel independently
+
+The installer links each of these skill folders individually into `~/.agents/skills/` so unrelated skills in that directory are left alone.
 
 ## Repo-Local Docs Setup
 
