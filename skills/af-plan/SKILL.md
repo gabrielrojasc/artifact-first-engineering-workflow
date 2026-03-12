@@ -1,6 +1,6 @@
 ---
 name: af-plan
-description: create mini-plans for PI work and phased plans for RPI work in an artifact-first engineering workflow. use when an agent must turn a task or research artifact into an actionable plan while stopping for more research if ownership, repo scope, contract dependencies, or rollout dependencies are still unclear.
+description: create mini-plans for `PI` (`Plan -> Implement`) work and phased plans for `RPI` (`Research -> Plan -> Implement`) work in an artifact-first engineering workflow. use when an agent must turn a task or research artifact into an actionable plan while stopping for more research if ownership, repo scope, contract dependencies, or rollout dependencies are still unclear.
 ---
 
 # Artifact-First Plan
@@ -9,8 +9,8 @@ description: create mini-plans for PI work and phased plans for RPI work in an a
 
 Turn a task or research artifact into a decision-complete implementation plan. The workflow is conditional:
 
-- use a mini-plan for PI work
-- use a phased plan for RPI work
+- use a mini-plan for `PI` (`Plan -> Implement`) work
+- use a phased plan for `RPI` (`Research -> Plan -> Implement`) work
 
 Planning should not paper over unclear ownership or weak evidence.
 

@@ -1,6 +1,6 @@
 # `$HOME/AGENTS.md` Snippets
 
-Use this file as a starting point for user-level guidance. Replace the placeholders with the actual paths and conventions for the workstation.
+Use this file as a starting point for user-level guidance. Replace every placeholder with the actual paths and conventions for the workstation before relying on the installed `AGENTS.md`.
 
 ## Generic Top-Level Snippet
 
@@ -36,6 +36,12 @@ Examples for scratch roots include `~/tmp/_ai_scratch`, `~/scratch/_ai`, and `/t
 - Cross-repo work keeps research and plans under `<CHOSEN_ENGINEERING_CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/`.
 - When a ticket exists, use `<clear-initiative>_<ticket-key>` so the initiative is clear at a glance and the ticket remains a suffix.
 - Use `workflow-state.md` only for complex, branching, or multi-repo coordination.
+
+## Shared Context Extras
+
+- Keep initiative-local decision records under `<CHOSEN_ENGINEERING_CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/decisions/` when cross-repo tradeoffs need a durable record.
+- Keep stable service or component reference cards under `<CHOSEN_ENGINEERING_CONTEXT_ROOT>/service-catalog/`.
+- Keep durable cross-repo dependency or contract maps under `<CHOSEN_ENGINEERING_CONTEXT_ROOT>/dependency-maps/`.
 
 ## Workflow Rules
 

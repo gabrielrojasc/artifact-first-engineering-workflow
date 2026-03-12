@@ -1,6 +1,6 @@
 # Install And Use
 
-This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills that teach branching PI and RPI workflows.
+This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills that teach branching `PI` (`Plan -> Implement`) and `RPI` (`Research -> Plan -> Implement`) workflows.
 
 ## Installation
 
@@ -11,20 +11,20 @@ This package is designed to be cloned, read, and copied from. It is intentionall
 scripts/install.sh
 ```
 
-3. Read [`docs/home-agents-guide.md`](home-agents-guide.md) and adapt the installed `~/.codex/AGENTS.md` guidance to your workstation.
+3. Read [`docs/home-agents-guide.md`](home-agents-guide.md) and replace every placeholder in the installed `~/.codex/AGENTS.md` with your real workstation paths and conventions.
 4. If the installer reports existing files or skill destinations, review the relevant docs and merge the rules manually instead of overwriting those paths.
 
 ## What The Installer Does
 
 The installer is intentionally conservative. It uses the current repo checkout as the live source of truth so future updates to this repo are reflected through symlinks.
 
-It will:
+It will run these command types:
 
-- detect the current repo root from the directory where you run it
-- create `~/.agents/skills/`, `~/.codex/`, and `~/.claude/` if they do not already exist
-- create per-skill symlinks in `~/.agents/skills/` that point back to this repo's [`skills/`](../skills/) directories
-- copy [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) to `~/.codex/AGENTS.md` if that file does not already exist
-- create `~/.claude/CLAUDE.md` as a symlink to `~/.codex/AGENTS.md` if it does not already exist
+- `git rev-parse --show-toplevel` to detect the current repo root
+- `mkdir -p` to create `~/.agents/skills/`, `~/.codex/`, and `~/.claude/` when missing
+- `ln -s` to create per-skill symlinks in `~/.agents/skills/` that point back to this repo's [`skills/`](../skills/) directories
+- `cp` to install [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) as `~/.codex/AGENTS.md` if that file does not already exist
+- `ln -s` to create `~/.claude/CLAUDE.md` as a symlink to `~/.codex/AGENTS.md` if it does not already exist
 
 It will not:
 
@@ -33,6 +33,10 @@ It will not:
 - replace an existing path under `~/.agents/skills/`
 
 When those paths already exist, the installer prints a warning and tells you which doc to review so you can merge the workflow rules yourself.
+
+The installed `~/.codex/AGENTS.md` is a starter file, not a finished workstation config. It still contains placeholders such as `<CHOSEN_REPOS_ROOT>`, `<CHOSEN_ENGINEERING_CONTEXT_ROOT>`, and `<CHOSEN_SCRATCH_ROOT>`. Replace them explicitly after installation.
+
+When `~/.claude/CLAUDE.md` is created by the installer, it is intentionally a symlink to `~/.codex/AGENTS.md` so both tools read the same guidance file.
 
 ## Installing The Skills
 
@@ -86,7 +90,7 @@ When `docs/services/` is used, each service card should cover:
 
 ## Shared `engineering-context` Setup
 
-Pick one shared repo for cross-repo work and create a shape like:
+The canonical agent-facing layout guidance lives in [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) and [`skills/af-research/SKILL.md`](../skills/af-research/SKILL.md). For human setup, use a shared repo for cross-repo work with a shape like:
 
 ```text
 engineering-context/
@@ -106,9 +110,9 @@ Use it for:
 - cross-repo research
 - initiative-level plans
 - rollout coordination
-- service catalog entries
-- dependency maps
-- architectural decisions
+- initiative-local decision records in `decisions/` when cross-repo tradeoffs need a durable record
+- stable service or component reference cards in `service-catalog/`
+- durable cross-repo dependency or contract maps in `dependency-maps/`
 
 Name active initiative folders for the work at hand, not for the ticket alone.
 

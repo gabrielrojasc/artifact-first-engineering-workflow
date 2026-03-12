@@ -18,6 +18,8 @@ Describe the intended outcome.
 
 ## Phases
 
+Repeat this phase block for each phase in the rollout.
+
 ### Phase 1
 
 - Repos and services touched
@@ -25,11 +27,11 @@ Describe the intended outcome.
 - Contract impact
 - Rollout order
 
-## Automated verification
+#### Automated verification
 
 - Check 1
 
-## Manual verification
+#### Manual verification
 
 - Check 1
 

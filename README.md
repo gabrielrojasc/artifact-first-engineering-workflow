@@ -2,6 +2,8 @@
 
 This repo packages a reusable artifact-first engineering workflow for repo-local and cross-repo work. It is primarily a filesystem layout, a set of Markdown manuals, and installable skills that help agents and engineers work from durable artifacts instead of chat history.
 
+In this workflow, `PI` means `Plan -> Implement` and `RPI` means `Research -> Plan -> Implement`.
+
 This repo has three parts:
 
 1. Guidance for what to add to `$HOME/AGENTS.md`
@@ -32,7 +34,7 @@ The influence shows up in artifact-first working habits, planning discipline, co
 - [$HOME/AGENTS.md guidance](docs/home-agents-guide.md)
 - [Install and use manual](docs/install-and-use.md)
 - [Workflow examples](docs/workflow-examples.md)
-- [Reusable snippets and templates](templates/HOME.AGENTS.snippets.md)
+- [Reusable home guidance snippet](templates/HOME.AGENTS.snippets.md)
 
 ## Skills
 

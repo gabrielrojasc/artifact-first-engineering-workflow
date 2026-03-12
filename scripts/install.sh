@@ -55,6 +55,10 @@ record_skipped() {
   skipped_items+=("$1")
 }
 
+log_command() {
+  printf '%s%srun%s %s\n' "${color_blue}" "${color_bold}" "${color_reset}" "$1"
+}
+
 path_exists() {
   [ -e "$1" ] || [ -L "$1" ]
 }
@@ -74,10 +78,13 @@ ensure_directory() {
     exit 1
   fi
 
+  log_command "mkdir -p ${dir_path}"
   mkdir -p "$dir_path"
   log_success "Created ${label} at ${dir_path}"
   record_created "${label}: ${dir_path}"
 }
+
+log_command "git rev-parse --show-toplevel"
 
 if ! repo_root="$(git rev-parse --show-toplevel 2>/dev/null)"; then
   log_error "Run ${script_name} from inside the artifact-first repo checkout or worktree."
@@ -106,6 +113,7 @@ codex_agents_file="${codex_dir}/AGENTS.md"
 claude_file="${claude_dir}/CLAUDE.md"
 
 log_info "Using repo root ${repo_root}"
+log_info "This installer runs: git rev-parse --show-toplevel, mkdir -p, ln -s, and cp."
 
 ensure_directory "${HOME}/.agents" "agent home"
 ensure_directory "$agents_skills_dir" "agent skills directory"
@@ -141,6 +149,7 @@ for skill_path in "$skills_source_dir"/*; do
     continue
   fi
 
+  log_command "ln -s ${skill_path} ${skill_dest}"
   ln -s "$skill_path" "$skill_dest"
   log_success "Linked skill ${skill_name} -> ${skill_path}"
   record_created "skill ${skill_name}: ${skill_dest}"
@@ -151,6 +160,7 @@ if path_exists "$codex_agents_file"; then
   log_warning "Review ${home_guide_doc} and add the workflow rules manually."
   record_skipped "Codex guidance: ${codex_agents_file}"
 else
+  log_command "cp ${agents_template} ${codex_agents_file}"
   cp "$agents_template" "$codex_agents_file"
   log_success "Copied Codex starter guide to ${codex_agents_file}"
   record_created "Codex guidance: ${codex_agents_file}"
@@ -161,10 +171,21 @@ if path_exists "$claude_file"; then
   log_warning "Review ${home_guide_doc} and add the workflow rules manually."
   record_skipped "Claude guidance: ${claude_file}"
 else
+  log_command "ln -s ${codex_agents_file} ${claude_file}"
   ln -s "$codex_agents_file" "$claude_file"
   log_success "Linked Claude guidance ${claude_file} -> ${codex_agents_file}"
   record_created "Claude guidance: ${claude_file}"
 fi
+
+printf '\n%s%sPost-install required%s\n' "${color_bold}" "${color_blue}" "${color_reset}"
+printf 'Replace the placeholders in %s before relying on it.\n' "$codex_agents_file"
+printf 'Expected placeholders include %s, %s, and %s.\n' \
+  '<CHOSEN_REPOS_ROOT>' \
+  '<CHOSEN_ENGINEERING_CONTEXT_ROOT>' \
+  '<CHOSEN_SCRATCH_ROOT>'
+printf 'When created by this installer, %s is intentionally a symlink to %s so both tools read the same guidance.\n' \
+  "$claude_file" \
+  "$codex_agents_file"
 
 printf '\n%s%sSummary%s\n' "${color_bold}" "${color_blue}" "${color_reset}"
 printf 'Repo root: %s\n' "$repo_root"

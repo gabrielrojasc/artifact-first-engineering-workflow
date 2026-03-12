@@ -76,6 +76,12 @@ engineering-context/
   dependency-maps/
 ```
 
+Use the shared-context directories as follows:
+
+- `decisions/`: initiative-local decision records when cross-repo tradeoffs need a durable record
+- `service-catalog/`: stable service or component reference cards reused across initiatives
+- `dependency-maps/`: durable cross-repo dependency or contract maps reused across initiatives
+
 ## Output
 
 Write the result using `references/research-template.md`.
