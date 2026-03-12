@@ -26,12 +26,14 @@ Task: add a new header requirement between an API gateway repo and two downstrea
 
 Recommended path:
 
-1. `af-research` runs in boundary tracing mode and writes a research artifact under `engineering-context/active/header-rollout/research/`.
+1. `af-research` runs in boundary tracing mode and writes a research artifact under `engineering-context/active/header-rollout_GATE-123/research/`.
 2. The research identifies the owning repo for the header contract, the downstream consumers, and the rollout constraints.
-3. `af-plan` creates a phased RPI plan under `engineering-context/active/header-rollout/plans/`.
+3. `af-plan` creates a phased RPI plan under `engineering-context/active/header-rollout_GATE-123/plans/`.
 4. The plan separates producer-first and consumer rollout steps and records automated and manual verification.
 5. `workflow-state.md` is added because the work spans multiple repos and rollout coordination matters.
 6. `af-implement` executes one phase at a time and updates the status artifact.
+
+The important naming rule is that the initiative stays readable at a glance and the ticket key stays secondary.
 
 Why RPI fits:
 

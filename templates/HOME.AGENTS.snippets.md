@@ -33,7 +33,8 @@ Examples for scratch roots include `~/tmp/_ai_scratch`, `~/scratch/_ai`, and `/t
 ## Planning Locations
 
 - Repo-local work keeps plans in the repo.
-- Cross-repo work keeps research and plans under `<CHOSEN_ENGINEERING_CONTEXT_ROOT>/active/<initiative>/`.
+- Cross-repo work keeps research and plans under `<CHOSEN_ENGINEERING_CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/`.
+- When a ticket exists, use `<clear-initiative>_<ticket-key>` so the initiative is clear at a glance and the ticket remains a suffix.
 - Use `workflow-state.md` only for complex, branching, or multi-repo coordination.
 
 ## Workflow Rules

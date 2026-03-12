@@ -40,6 +40,13 @@ Use this skill when the task involves one or more of these modes:
 - Cross-repo question: place the artifact in the shared `engineering-context` repo under the active initiative.
 - Scratch can hold temporary notes, but final findings belong in versioned Markdown.
 
+For cross-repo work, name the active initiative folder for the clear initiative, not for the ticket alone.
+
+- With a ticket: `<clear-initiative>_<ticket-key>`
+- Without a ticket: `<clear-initiative>`
+- Keep the ticket key as a suffix only.
+- Reuse the same clear initiative phrase in the research title.
+
 Use the repo-local docs layout:
 
 ```text
@@ -59,7 +66,7 @@ Use the shared cross-repo layout:
 ```text
 engineering-context/
   active/
-    <initiative>/
+    <clear-initiative>[_<ticket-key>]/
       workflow-state.md
       research/
       plans/

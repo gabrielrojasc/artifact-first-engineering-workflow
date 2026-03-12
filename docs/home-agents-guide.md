@@ -58,7 +58,7 @@ Your home guidance should tell the agent that cross-repo work belongs in a chose
 ```text
 engineering-context/
   active/
-    <initiative>/
+    <clear-initiative>[_<ticket-key>]/
       workflow-state.md
       research/
       plans/
@@ -69,6 +69,18 @@ engineering-context/
 ```
 
 `workflow-state.md` is optional. Use it only when the work is complex enough that coordination state should live outside the plan itself.
+
+Name the initiative folder for the work, not for the ticket alone.
+
+- With a ticket: `<clear-initiative>_<ticket-key>`
+- Without a ticket: `<clear-initiative>`
+- Keep the ticket key as a suffix only, never the whole folder name or the prefix.
+
+Examples:
+
+- `header-rollout_GATE-123`
+- `checkout-retry-policy_PAY-204`
+- `search-ranking-tuneup`
 
 ## Copy-Paste Snippet
 
@@ -102,7 +114,8 @@ Adapt this snippet to your workstation:
 ## Planning Locations
 
 - Repo-specific plans live in `docs/exec-plans/active/` and move to `docs/exec-plans/completed/` when finished.
-- Cross-repo initiatives live under `<CHOSEN_ENGINEERING_CONTEXT_ROOT>/active/<initiative>/`.
+- Cross-repo initiatives live under `<CHOSEN_ENGINEERING_CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/`.
+- When a ticket exists, use `<clear-initiative>_<ticket-key>` so the initiative is understandable at a glance and the ticket stays secondary.
 - Use `workflow-state.md` only when the work has branching coordination that does not fit cleanly inside the plan.
 
 ## Scratch Guidance

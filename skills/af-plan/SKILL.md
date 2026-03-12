@@ -60,6 +60,8 @@ In that case, emit a research request using `references/research-request-templat
 
 - Simple work: keep state inside the plan itself.
 - Complex multi-repo or branching work: add `workflow-state.md` in the shared initiative folder.
+- Name shared initiative folders with the clear initiative first: `<clear-initiative>_<ticket-key>` when a ticket exists, otherwise `<clear-initiative>`.
+- Keep any ticket key as a suffix only, and reuse the same clear initiative phrase in the plan title.
 
 Keep `workflow-state.md` small and coordination-oriented.
 

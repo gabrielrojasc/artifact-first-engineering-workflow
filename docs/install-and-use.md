@@ -64,7 +64,7 @@ Pick one shared repo for cross-repo work and create a shape like:
 ```text
 engineering-context/
   active/
-    <initiative>/
+    <clear-initiative>[_<ticket-key>]/
       workflow-state.md
       research/
       plans/
@@ -82,6 +82,21 @@ Use it for:
 - service catalog entries
 - dependency maps
 - architectural decisions
+
+Name active initiative folders for the work at hand, not for the ticket alone.
+
+- Default pattern with a ticket: `<clear-initiative>_<ticket-key>`
+- Default pattern without a ticket: `<clear-initiative>`
+- Keep the clear-initiative part short, readable, and understandable at a glance.
+- Keep the ticket key as a suffix only when it helps traceability.
+
+Examples:
+
+- `header-rollout_GATE-123`
+- `checkout-retry-policy_PAY-204`
+- `search-ranking-tuneup`
+
+Avoid ticket-led names such as `GATE-123` or `GATE-123_header-rollout`.
 
 ## What Ownership Means
 
@@ -138,7 +153,7 @@ Choose the research mode that fits the task:
 - contract validation
 - rollout or environment validation
 
-When the work is cross-repo, place the main artifact under the shared `engineering-context` initiative folder. When it is repo-local, keep the artifact in the repo's own docs tree.
+When the work is cross-repo, place the main artifact under the shared `engineering-context` initiative folder. Use the same clear initiative phrase for the folder and the artifact title. When it is repo-local, keep the artifact in the repo's own docs tree.
 
 ### Plan
 
