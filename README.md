@@ -32,7 +32,7 @@ The influence shows up in artifact-first working habits, planning discipline, co
 
 ## Start Here
 
-- Run `scripts/install.sh` from this repo checkout or worktree to install the starter home files and live skill symlinks.
+- Clone this repo, then run `scripts/install.sh` to install the starter home files and live skill symlinks.
 - [$HOME/AGENTS.md guidance](docs/home-agents-guide.md)
 - [Install and use manual](docs/install-and-use.md)
 - [Workflow examples](docs/workflow-examples.md)
