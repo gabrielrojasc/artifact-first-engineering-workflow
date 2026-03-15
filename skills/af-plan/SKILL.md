@@ -42,9 +42,41 @@ Choose `full phased plan` when:
 - ownership or boundaries matter
 - the task is ambiguous
 
+### Size Heuristics
+
+When "small" is ambiguous, use these indicators:
+
+Mini-plan indicators (any three suggest mini-plan):
+
+- Fewer than ~5 files changing
+- Single repo
+- No schema or contract change
+- No rollout sequencing beyond "deploy and verify"
+- Estimated risk is low (failure is local and recoverable)
+- No ownership ambiguity
+
+Phased plan indicators (any one suggests phased plan):
+
+- Multiple repos
+- Any shared schema, API, or event contract changes
+- Rollout must happen in a specific order
+- Multiple teams or ownership boundaries involved
+- Failure could cascade beyond the immediate change
+- Significant ambiguity in scope or approach
+
 Common workflow paths include `PI`, `RPI`, `R -> R -> P -> I`, `P -> R -> P -> I`, `I -> P`, and `I -> R`.
 
 These are recommended patterns, not an exhaustive set of allowed transitions.
+
+### Re-Planning After Implementation Feedback
+
+When returning from implementation to planning (`I -> P` or `I -> R -> P`):
+
+- Read the mismatch artifact and all phase status artifacts from the prior implementation pass.
+- Preserve completed phases as-is unless the mismatch invalidates their results.
+- Revise only the affected phases.
+- Carry forward deltas recorded during bounded drift into the revised plan so the plan reflects actual state.
+- Note in the plan that this is a revision and reference the prior plan artifact.
 
 ## Research Stop Condition
 

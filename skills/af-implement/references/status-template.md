@@ -22,8 +22,9 @@
 
 ## Manual verification
 
-- Required:
-- Deferred:
+- [ ] Check description (who verifies, what to look for, pass criteria)
+- Required: yes | deferred
+- If deferred, reason:
 
 ## Next action
 
