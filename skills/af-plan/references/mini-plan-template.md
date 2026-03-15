@@ -17,6 +17,11 @@ Describe the intended outcome.
 - Repo or service
 - Main change points
 
+## Implementation references
+
+- Version-sensitive technology notes
+- Official docs to reuse during implementation
+
 ## Automated verification
 
 - Check 1

@@ -27,6 +27,13 @@ Describe the exact question this research pass answers.
 - Key docs
 - Relevant tests or commands
 
+## Technology versions and docs
+
+- Technology or library:
+- Version evidence:
+- Official docs consulted:
+- Why the version match is credible:
+
 ## Unknowns
 
 - Unknown 1

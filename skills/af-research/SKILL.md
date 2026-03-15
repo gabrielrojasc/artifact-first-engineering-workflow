@@ -21,17 +21,21 @@ Use this skill when the task involves one or more of these modes:
 1. Restate the task as a research question.
 2. Identify the relevant repo set, services, contracts, and environments.
 3. Read the smallest stable source-of-truth artifacts first.
-4. Trace the behavior across repo and service boundaries.
-5. Compact the findings into a durable Markdown artifact.
-6. End with a clear readiness call and next step.
+4. Detect technology and dependency versions from repo-local manifests, lockfiles, images, and config when framework or library behavior matters.
+5. Trace the behavior across repo and service boundaries.
+6. Confirm external framework or library behavior against official version-matched docs when repo evidence alone is not enough.
+7. Compact the findings into a durable Markdown artifact.
+8. End with a clear readiness call and next step.
 
 ## Rules
 
 - Document current reality, not desired architecture.
 - Prefer repository-local, versioned artifacts over chat transcripts or assumptions.
+- Prefer repo-local evidence first, then official version-matched docs for external technology behavior.
 - Treat `AGENTS.md` as a map, not a long manual.
 - When repo boundaries or ownership are unclear, keep tracing until the uncertainty is explicit.
 - When evidence is weak or conflicting, say so and rank the most reliable sources.
+- When an API or framework behavior is in question, record the detected version and the exact docs consulted instead of relying on memory.
 - Keep the output compact enough for a later planning pass to reuse directly.
 
 ## Artifact Placement

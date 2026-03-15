@@ -16,6 +16,11 @@ Describe the intended outcome.
 
 - Phase 1: not started
 
+## Implementation references
+
+- Version-sensitive technology notes
+- Official docs to reuse during implementation
+
 ## Phases
 
 Repeat this phase block for each phase in the rollout.

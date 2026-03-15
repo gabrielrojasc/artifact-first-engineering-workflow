@@ -8,6 +8,7 @@ Planning is blocked because one or more prerequisites are unclear.
 - Ownership boundary
 - Contract dependency
 - Rollout dependency
+- Version-sensitive framework or library behavior
 
 ## Why planning should stop
 

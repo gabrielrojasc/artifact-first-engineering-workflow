@@ -48,6 +48,7 @@ Examples for scratch roots include `~/tmp/_ai_scratch`, `~/scratch/_ai`, and `/t
 - Plans are first-class artifacts.
 - Compact useful exploration into durable Markdown.
 - Distinguish automated verification from manual verification.
+- When framework or library behavior matters, verify it against repo-detected versions and official docs instead of memory.
 - If ownership, boundaries, or evidence are unclear, do more research instead of guessing.
 
 ## Scratch Guidance

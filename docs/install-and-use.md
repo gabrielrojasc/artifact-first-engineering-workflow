@@ -188,12 +188,15 @@ Choose the research mode that fits the task:
 
 When the work is cross-repo, place the main artifact under the shared `engineering-context` initiative folder. Use the same clear initiative phrase for the folder and the artifact title. When it is repo-local, keep the artifact in the repo's own docs tree.
 
+When behavior depends on a framework or library API, detect the version from repo-local manifests, lockfiles, images, or config first. If repo evidence does not fully prove the behavior, cite the matching official docs in the research artifact instead of relying on memory.
+
 ### Plan
 
 Use planning to turn a task or research artifact into an actionable implementation path.
 
 - Use a mini-plan for PI work.
 - Use a phased plan for RPI work.
+- Carry forward the version-sensitive docs and technology references the implementer will need when framework or library behavior matters.
 - If ownership, repo set, contract dependencies, or rollout dependencies are unclear, stop and produce a research request instead of pretending the plan is ready.
 
 ### Implement
@@ -201,7 +204,8 @@ Use planning to turn a task or research artifact into an actionable implementati
 Implement phase by phase from an approved plan artifact.
 
 - Keep automated verification separate from manual verification.
-- If the codebase differs from plan details, return to planning.
+- If the codebase differs only in bounded implementation detail, continue and record the delta in the status artifact.
+- If the codebase differs in goal, behavior, scope, or rollout assumptions, return to planning.
 - If ownership, boundaries, or dependency understanding is wrong, return to research.
 
 ## When To Use `workflow-state.md`

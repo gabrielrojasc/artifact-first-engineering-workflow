@@ -20,15 +20,19 @@ Supported exits:
 1. Read the approved plan completely.
 2. Read the files and docs named by the current phase.
 3. Confirm repo order, ownership, and dependency expectations.
-4. Implement one phase at a time.
-5. Run automated verification before advancing.
-6. Record manual verification separately.
-7. Route back to planning or research when reality diverges.
+4. Reuse the version-grounded references from the plan when framework or library behavior matters.
+5. Implement one phase at a time.
+6. Run automated verification before advancing.
+7. Record manual verification separately.
+8. Route back to planning or research when reality diverges beyond bounded detail drift.
 
 ## Mismatch Policy
 
-- Code or detail mismatch -> return to planning and revise the plan.
+- Bounded code or detail drift -> continue implementation and record the exact delta in the phase status artifact.
+- Meaningful scope or behavior mismatch -> return to planning and revise the plan.
 - Ownership, boundary, or dependency mismatch -> return to research.
+
+Bounded detail drift means the approved goal, ownership, contract surface, rollout order, and risk level still hold even if file layout, exact diff shape, or nearby code changed.
 
 Do not silently absorb meaningful mismatches into implementation.
 

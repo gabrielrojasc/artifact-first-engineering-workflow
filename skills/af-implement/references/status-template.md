@@ -9,6 +9,12 @@
 
 - Change 1
 
+## Plan delta
+
+- Original plan detail:
+- Actual implementation detail:
+- Why this stayed in bounds:
+
 ## Automated verification
 
 - Passed:

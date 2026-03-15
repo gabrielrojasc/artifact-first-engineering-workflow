@@ -54,5 +54,7 @@ The `af` prefix stands for `artifact-first`.
 - Short, map-like agent guidance instead of giant manuals
 - Plans as first-class artifacts
 - Compacting useful exploration into durable Markdown
+- Version-grounded framework and library references when repo evidence alone is not enough
 - Explicit separation of automated verification from manual verification
+- Bounded implementation adaptation with explicit status logging instead of brittle plan matching
 - Returning to research when ownership, boundaries, or evidence are unclear
