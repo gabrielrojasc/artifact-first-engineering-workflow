@@ -20,6 +20,12 @@
 - Passed:
 - Not run:
 
+## Verification retries
+
+- Attempt: 1 | 2 | 3
+- What changed since last attempt:
+- If attempt 3 failed: return to planning
+
 ## Manual verification
 
 - [ ] Check description (who verifies, what to look for, pass criteria)

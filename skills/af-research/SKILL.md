@@ -39,6 +39,7 @@ Combine modes when one pass reveals gaps. A repo discovery pass that uncovers un
    - Test files for behavior verification
    - Source code only after the above have established context
    Avoid reading source files broadly before narrowing scope through artifacts.
+   If the question remains unanswered after the artifact pass, broaden once to targeted source files and tests. If still unanswered after that single broadening pass, reassess the research question or approach before broadening further.
 4. Detect technology and dependency versions from repo-local manifests, lockfiles, images, and config when framework or library behavior matters.
 5. Trace the behavior across repo and service boundaries.
 6. Confirm external framework or library behavior against official version-matched docs when repo evidence alone is not enough.
@@ -55,6 +56,7 @@ Combine modes when one pass reveals gaps. A repo discovery pass that uncovers un
 - When evidence is weak or conflicting, say so and rank the most reliable sources.
 - When an API or framework behavior is in question, record the detected version and the exact docs consulted instead of relying on memory.
 - Keep the output compact enough for a later planning pass to reuse directly.
+- If discovery is not converging after two passes through the same source area, reassess the research mode (e.g., switch from boundary tracing to contract validation) rather than continuing the same approach.
 
 ## Sufficiency Gate
 

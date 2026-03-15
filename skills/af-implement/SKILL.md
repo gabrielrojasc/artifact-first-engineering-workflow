@@ -21,10 +21,11 @@ Supported exits:
 2. Read the files and docs named by the current phase.
 3. Confirm repo order, ownership, and dependency expectations.
 4. Reuse the version-grounded references from the plan when framework or library behavior matters.
-5. Implement one phase at a time.
-6. Run automated verification before advancing.
-7. Record manual verification separately.
-8. Route back to planning or research when reality diverges beyond bounded detail drift.
+5. Before editing code, state in the status artifact: the approach (one sentence) and the most likely failure mode (one sentence).
+6. Implement one phase at a time.
+7. Run automated verification before advancing.
+8. Record manual verification separately.
+9. Route back to planning or research when reality diverges beyond bounded detail drift.
 
 ## Mismatch Policy
 
@@ -84,6 +85,13 @@ When a dependency version has changed since planning:
 
 Individual deltas may each pass the drift decision gate, but accumulated drift can make the plan unreliable as a whole. After recording **three or more** plan deltas within a single phase, pause and re-evaluate the phase against the original plan goal. If the accumulated deltas collectively change the approach, return to planning even though each delta was individually bounded.
 
+### Stuck-State Gate
+
+Before each action, check sequentially:
+
+1. **Are the last 3+ actions identical?** (e.g., re-running the same failing test without changes, reading the same file again) YES -> stop, articulate why you are stuck, and choose a materially different approach. NO -> continue to 2.
+2. **Are the last actions a repeating cycle?** (e.g., editing file A, then file B, then file A again without progress) YES -> stop, articulate why, and choose a materially different approach. NO -> continue.
+
 ## State Handling
 
 - If the plan already captures enough status, keep state there.
@@ -97,6 +105,18 @@ Individual deltas may each pass the drift decision gate, but accumulated drift c
 - Preserve artifact quality so another agent can resume cleanly.
 - Use repo-local docs and shared `engineering-context` layouts consistently.
 - Do not explore alternative approaches during implementation. If the plan does not match reality, use the drift decision gate to route back to planning rather than improvising.
+
+## Verification Recovery Protocol
+
+When automated verification fails, before retrying:
+
+1. State exactly what failed and the observed vs expected behavior.
+2. State the root cause -- why the failure happened, not just what failed.
+3. Make the corrected change based on that root cause.
+
+**Retry budget**: original attempt + up to 2 retries (3 total). Before retry 2, the hypothesis must be materially different from retry 1. If all 3 attempts fail, stop and return to planning with the failure evidence.
+
+Record each attempt number and what changed in the status artifact.
 
 ## Execution Context
 
