@@ -119,6 +119,39 @@ ensure_directory "${HOME}/.agents" "agent home"
 ensure_directory "$agents_skills_dir" "agent skills directory"
 ensure_directory "$codex_dir" "Codex directory"
 ensure_directory "$claude_dir" "Claude directory"
+ensure_directory "${claude_dir}/skills" "Claude skills directory"
+
+link_skill() {
+  local skill_path="$1"
+  local skill_name="$2"
+  local skill_dest="$3"
+
+  if [ -L "$skill_dest" ]; then
+    current_target="$(readlink "$skill_dest")"
+    if [ "$current_target" = "$skill_path" ]; then
+      log_info "Skill ${skill_name} already points to ${skill_path} at ${skill_dest}"
+      record_unchanged "skill ${skill_name}: ${skill_dest}"
+      return
+    fi
+
+    log_warning "Skill destination ${skill_dest} already points to ${current_target}; leaving it unchanged."
+    log_warning "Review ${install_guide_doc} and update that skill manually if you want this workflow there."
+    record_skipped "skill ${skill_name}: ${skill_dest}"
+    return
+  fi
+
+  if [ -e "$skill_dest" ]; then
+    log_warning "Skill destination ${skill_dest} already exists; leaving it unchanged."
+    log_warning "Review ${install_guide_doc} and update that skill manually if you want this workflow there."
+    record_skipped "skill ${skill_name}: ${skill_dest}"
+    return
+  fi
+
+  log_command "ln -s ${skill_path} ${skill_dest}"
+  ln -s "$skill_path" "$skill_dest"
+  log_success "Linked skill ${skill_name} -> ${skill_path}"
+  record_created "skill ${skill_name}: ${skill_dest}"
+}
 
 for skill_path in "$skills_source_dir"/*; do
   if [ ! -d "$skill_path" ]; then
@@ -126,33 +159,8 @@ for skill_path in "$skills_source_dir"/*; do
   fi
 
   skill_name="$(basename "$skill_path")"
-  skill_dest="${agents_skills_dir}/${skill_name}"
-
-  if [ -L "$skill_dest" ]; then
-    current_target="$(readlink "$skill_dest")"
-    if [ "$current_target" = "$skill_path" ]; then
-      log_info "Skill ${skill_name} already points to ${skill_path}"
-      record_unchanged "skill ${skill_name}: ${skill_dest}"
-      continue
-    fi
-
-    log_warning "Skill destination ${skill_dest} already points to ${current_target}; leaving it unchanged."
-    log_warning "Review ${install_guide_doc} and update that skill manually if you want this workflow there."
-    record_skipped "skill ${skill_name}: ${skill_dest}"
-    continue
-  fi
-
-  if [ -e "$skill_dest" ]; then
-    log_warning "Skill destination ${skill_dest} already exists; leaving it unchanged."
-    log_warning "Review ${install_guide_doc} and update that skill manually if you want this workflow there."
-    record_skipped "skill ${skill_name}: ${skill_dest}"
-    continue
-  fi
-
-  log_command "ln -s ${skill_path} ${skill_dest}"
-  ln -s "$skill_path" "$skill_dest"
-  log_success "Linked skill ${skill_name} -> ${skill_path}"
-  record_created "skill ${skill_name}: ${skill_dest}"
+  link_skill "$skill_path" "$skill_name" "${agents_skills_dir}/${skill_name}"
+  link_skill "$skill_path" "$skill_name" "${claude_dir}/skills/${skill_name}"
 done
 
 if path_exists "$codex_agents_file"; then
