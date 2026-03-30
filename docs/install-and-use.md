@@ -1,6 +1,6 @@
 # Install And Use
 
-This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills that teach branching `PI` (`Plan -> Implement`) and `RPI` (`Research -> Plan -> Implement`) workflows.
+This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills for research, planning, implementation, plan iteration, and session handoff. Planning follows a QRSPI-style path: Questions, Research when needed, Design, Structure, and Plan before implementation. `PI` (`Plan -> Implement`) and `RPI` (`Research -> Plan -> Implement`) remain useful shorthand for the two common execution paths.
 
 Here, `artifact-first` means the durable file is the source of truth. Active plans, research notes, status artifacts, and decisions should exist as versioned artifacts that agents and humans can reuse; repo-local docs should preserve the durable knowledge worth carrying forward. Chat should support those artifacts, not replace them.
 
@@ -47,6 +47,8 @@ The canonical workflow definitions live in these folders:
 - [`skills/af-research/`](../skills/af-research/)
 - [`skills/af-plan/`](../skills/af-plan/)
 - [`skills/af-implement/`](../skills/af-implement/)
+- [`skills/af-iterate/`](../skills/af-iterate/)
+- [`skills/af-handoff/`](../skills/af-handoff/)
 
 Each skill contains:
 
@@ -108,7 +110,7 @@ engineering-context/
 Use it for:
 
 - research artifacts for both single-repo and cross-repo work
-- implementation plans for both PI and RPI work
+- implementation plans for both PI and RPI paths
 - implementation status artifacts and close-out records
 - rollout coordination
 - initiative-local decision records in `decisions/` when cross-repo tradeoffs need a durable record
@@ -141,9 +143,11 @@ Examples:
 - which team or component is the authoritative place to change behavior
 - whether a document belongs in repo-local durable docs or the shared execution context
 
-If ownership is unclear, planning should stop and request more research instead of guessing where the change belongs.
+If ownership is unclear, planning should route into more research instead of guessing where the change belongs.
 
-## Choosing PI vs RPI
+## Choosing A PI Or RPI Path
+
+Planning now starts with QRSPI-style alignment inside `af-plan`: ask informed questions, gather research when needed, discuss design, approve the structure, then write the plan. `PI` and `RPI` are still useful labels, but they describe the resulting path shape and risk profile rather than replacing those planning steps.
 
 Use `PI` when:
 
@@ -176,7 +180,7 @@ These are recommended patterns, not an exhaustive set of allowed transitions.
 
 ### Research
 
-Use research to document the system as it exists today. Good research should leave behind a durable artifact rather than a long chat transcript.
+Use research to document the system as it exists today. Good research should leave behind a durable artifact rather than a long chat transcript. Research can be a standalone `af-research` pass or an inline pass delegated by `af-plan` when planning starts without enough truth.
 
 Choose the research mode that fits the task:
 
@@ -193,11 +197,13 @@ When behavior depends on a framework or library API, detect the version from rep
 
 Use planning to turn a task or research artifact into an actionable implementation path.
 
-- Use a mini-plan for PI work.
-- Use a phased plan for RPI work.
+- `af-plan` performs QRSPI-style alignment before writing the plan: Questioning, Design Discussion, and Structure Approval.
+- Use a mini-plan for the PI path.
+- Use a phased plan for the RPI path.
 - Store plan artifacts under the shared initiative folder's `plans/` directory.
 - Carry forward the version-sensitive docs and technology references the implementer will need when framework or library behavior matters.
-- If ownership, repo set, contract dependencies, or rollout dependencies are unclear, stop and produce a research request instead of pretending the plan is ready.
+- If no prior research artifact exists and ownership, repo set, contract dependencies, or rollout dependencies are unclear, delegate inline research instead of pretending the plan is ready.
+- Use standalone `af-research` when the task is pure discovery, audit, or boundary mapping without immediate planning.
 
 ### Implement
 

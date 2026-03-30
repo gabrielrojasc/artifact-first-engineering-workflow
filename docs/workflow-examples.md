@@ -1,42 +1,43 @@
 # Workflow Examples
 
-These examples are intentionally small. The point is to show when to stay in PI, when to escalate to RPI, and when implementation should route back to planning or research.
+These examples are intentionally small. The point is to show when to stay on the lighter PI path, when to take the research-backed RPI path, and how QRSPI-style planning fits before implementation.
 
-## Example 1: Small PI Change
+## Example 1: Small PI Path
 
 Task: add a missing timeout to one HTTP client in a single service repo.
 
 Recommended path:
 
-1. `af-plan` produces a mini-plan under `engineering-context/active/http-client-timeout/plans/`.
+1. `af-plan` runs a light Questioning, Design Discussion, and Structure Approval pass, then writes a mini-plan under `engineering-context/active/http-client-timeout/plans/`.
 2. The plan lists the target files, any version-sensitive library docs the implementer should trust, automated checks, and manual verification.
 3. `af-implement` executes the change and records phase status under `engineering-context/active/http-client-timeout/status/`.
 4. If the change surfaced no durable repo knowledge beyond the implementation itself, no repo-local docs update is required at close-out.
 
-Why PI fits:
+Why the PI path fits:
 
 - single repo
 - low ambiguity
 - no cross-service contract change
 - rollout is simple
 
-## Example 2: Cross-Repo RPI Change
+## Example 2: Cross-Repo RPI Path
 
 Task: add a new header requirement between an API gateway repo and two downstream service repos.
 
 Recommended path:
 
-1. `af-research` runs in boundary tracing mode and writes a research artifact under `engineering-context/active/header-rollout_GATE-123/research/`.
-2. The research identifies the owning repo for the header contract, the downstream consumers, the rollout constraints, and any version-sensitive framework behavior that needs official docs.
-3. `af-plan` creates a phased RPI plan under `engineering-context/active/header-rollout_GATE-123/plans/`.
-4. The plan separates producer-first and consumer rollout steps and records automated and manual verification.
-5. `workflow-state.md` is added because the work spans multiple repos and rollout coordination matters.
-6. `af-implement` executes one phase at a time and updates the status artifact under `engineering-context/active/header-rollout_GATE-123/status/`.
-7. Close-out distills any lasting gateway or service rollout knowledge into the relevant repo docs before the work is considered complete.
+1. `af-plan` receives the task and sees that repo ownership, contract boundaries, and rollout order are still unclear.
+2. `af-plan` delegates bounded `af-research` work, which writes a research artifact under `engineering-context/active/header-rollout_GATE-123/research/`.
+3. The research identifies the owning repo for the header contract, the downstream consumers, the rollout constraints, and any version-sensitive framework behavior that needs official docs.
+4. `af-plan` then runs Questioning, Design Discussion, and Structure Approval with the human, and writes a phased RPI plan under `engineering-context/active/header-rollout_GATE-123/plans/`.
+5. The plan separates producer-first and consumer rollout steps and records automated and manual verification.
+6. `workflow-state.md` is added because the work spans multiple repos and rollout coordination matters.
+7. `af-implement` executes one phase at a time and updates the status artifact under `engineering-context/active/header-rollout_GATE-123/status/`.
+8. Close-out distills any lasting gateway or service rollout knowledge into the relevant repo docs before the work is considered complete.
 
 The important naming rule is that the initiative stays readable at a glance and the ticket key stays secondary.
 
-Why RPI fits:
+Why the RPI path fits:
 
 - cross-repo contract impact
 - explicit ownership and rollout questions
@@ -63,8 +64,10 @@ This is the key discipline:
 
 ## Pattern Summary
 
-- Use PI for small, low-ambiguity, mostly single-repo work.
-- Use RPI for cross-repo work where contracts, rollout order, or ownership matter.
+- Use the PI path for small, low-ambiguity, mostly single-repo work.
+- Use the RPI path for cross-repo work where contracts, rollout order, or ownership matter.
+- `af-plan` uses QRSPI-style planning in both cases; the difference is whether the result is a lighter mini-plan or a phased plan.
+- Use standalone `af-research` for pure discovery or audit work when you want a research artifact before any planning step.
 - Keep active research, plans, and status artifacts under the shared context root by default, and update repo-local docs only when completed work reveals durable knowledge worth preserving.
 - Ground framework or library behavior in repo-detected versions and official docs when the repo alone is not enough.
 - Add another research pass whenever planning or implementation reveals weak evidence.

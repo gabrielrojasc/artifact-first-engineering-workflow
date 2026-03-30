@@ -1,13 +1,13 @@
 ---
 name: af-plan
-description: create mini-plans for `PI` (`Plan -> Implement`) work and phased plans for `RPI` (`Research -> Plan -> Implement`) work in an artifact-first engineering workflow. use when an agent must turn a task or research artifact into an actionable plan while stopping for more research if ownership, repo scope, contract dependencies, or rollout dependencies are still unclear.
+description: create mini-plans for `PI` (`Plan -> Implement`) work and phased plans for `RPI` (`Research -> Plan -> Implement`) work in an artifact-first engineering workflow, using QRSPI-style interactive alignment and inline research when needed. use when an agent must turn a task or research artifact into an actionable plan while routing into more research if ownership, repo scope, contract dependencies, or rollout dependencies are still unclear.
 ---
 
 # Artifact-First Plan
 
 ## Overview
 
-Turn a task or research artifact into a decision-complete implementation plan. The workflow is conditional:
+Turn a task or research artifact into a decision-complete implementation plan. Planning follows a QRSPI-style flow: Questions, Research when needed, Design discussion, Structure approval, and then the written plan. `PI` and `RPI` are still path labels for the resulting plan shape. The workflow is conditional:
 
 - use a mini-plan for `PI` (`Plan -> Implement`) work
 - use a phased plan for `RPI` (`Research -> Plan -> Implement`) work
@@ -35,6 +35,8 @@ Three mandatory steps before writing the plan.
 **Structure Approval**: Present a plan outline with phased breakdown and get explicit approval before writing the full plan. For mini-plans, present the intended edits and verify scope.
 
 ## Planning Modes
+
+`PI` and `RPI` are planning path labels, not substitutes for the interactive alignment steps above.
 
 Choose `mini-plan` when:
 
@@ -113,7 +115,7 @@ Keep `workflow-state.md` small and coordination-oriented.
 
 - Use `references/mini-plan-template.md` for PI work.
 - Use `references/phased-plan-template.md` for RPI work.
-- Use `references/research-request-template.md` when planning is blocked by missing truth.
+- Use `references/research-request-template.md` only when inline research still leaves planning-blocking truth gaps.
 
 ## Rules
 
