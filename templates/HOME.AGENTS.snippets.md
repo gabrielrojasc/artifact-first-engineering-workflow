@@ -40,4 +40,18 @@ Replace these placeholders before use:
 - Distinguish automated verification from manual verification.
 - Verify framework/library behavior against repo-detected versions and official docs, not memory.
 - When ownership, boundaries, or evidence are unclear, research before guessing.
+
+## Artifact Readability
+
+Human-facing artifacts -- plans, research, decision records -- must optimize for scanning and comprehension. Agent-to-agent artifacts like handoffs and status updates prioritize machine-parseable completeness instead.
+
+- Lead each section with the conclusion or key takeaway, then supporting detail.
+- Short declarative sentences. Cut filler phrases ("it should be noted", "in order to", "it is important that").
+- Concrete over abstract: specific file paths, function names, and version numbers over vague references.
+- Use bullet lists for three or more related items. Use tables for comparisons or structured attribute sets.
+- One idea per paragraph. No wall-of-text blocks.
+- Write headings that state the finding or decision, not just the topic (prefer "Auth middleware stores tokens in plaintext" over "Auth middleware analysis").
+- Use **bold** for key terms on first mention and for emphasis.
+- Use Mermaid diagrams for flows, dependency graphs, and architecture when visual structure aids comprehension over prose.
+- Consistent terminology throughout the artifact. Pick one term for a concept and keep it.
 ```

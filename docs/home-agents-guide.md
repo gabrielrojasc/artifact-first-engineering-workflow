@@ -91,6 +91,20 @@ Examples:
 - `checkout-retry-policy_PAY-204`
 - `search-ranking-tuneup`
 
+## Readability Guidance To Include
+
+Your home guidance should tell the agent to optimize human-facing artifacts for scanning and comprehension. This applies to plans, research, and decision records -- artifacts a human will read to understand the system or make decisions. Agent-to-agent artifacts like handoffs and status updates should prioritize machine-parseable completeness instead.
+
+The key principles to include:
+
+- **Front-load conclusions**: each section starts with the takeaway, then the evidence.
+- **Terse prose**: short sentences, no filler phrases, concrete references over vague descriptions.
+- **Structured data**: bullet lists for related items, tables for comparisons, Mermaid diagrams for flows and dependency graphs.
+- **Scannable headings**: headings that state findings or decisions, not just topics.
+- **Consistent terminology**: one term per concept throughout the artifact.
+
+This section belongs in the home agent guidance because readability is a cross-cutting concern that applies to all agent output, not just specific skills. Skills should focus on their domain workflow; the home guidance sets the baseline writing standard.
+
 ## Installed Snippet Source
 
 Use [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) as the single source of truth for the installed home guidance. After installation, replace every placeholder in `~/.codex/AGENTS.md` with real workstation paths and conventions.
