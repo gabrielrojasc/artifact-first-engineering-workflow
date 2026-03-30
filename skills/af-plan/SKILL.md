@@ -104,6 +104,8 @@ Standalone af-research remains the right tool for pure discovery, audits, or whe
 - Complex multi-repo or branching work: add `workflow-state.md` in the shared initiative folder.
 - Name shared initiative folders with the clear initiative first: `<clear-initiative>_<ticket-key>` when a ticket exists, otherwise `<clear-initiative>`.
 - Keep any ticket key as a suffix only, and reuse the same clear initiative phrase in the plan title.
+- Store plan artifacts under `<CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/plans/` for both single-repo and cross-repo work.
+- Treat repo-local `docs/` as durable knowledge storage, not the default location for execution plans.
 
 Keep `workflow-state.md` small and coordination-oriented.
 
@@ -120,4 +122,4 @@ Keep `workflow-state.md` small and coordination-oriented.
 - Record what is automated verification versus manual verification.
 - When implementation depends on framework or library behavior, include the detected version and official docs the implementer should rely on.
 - If rollout order matters, say so explicitly.
-- Follow repo-local and shared-context layouts instead of inventing ad hoc locations.
+- Follow repo-local durable-docs and shared-context execution layouts instead of inventing ad hoc locations.

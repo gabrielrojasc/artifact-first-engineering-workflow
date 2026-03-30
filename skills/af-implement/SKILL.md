@@ -26,6 +26,7 @@ Supported exits:
 7. Run automated verification before advancing.
 8. Record manual verification separately.
 9. Route back to planning or research when reality diverges beyond bounded detail drift.
+10. Before closing implementation, decide whether the work surfaced durable knowledge that belongs in repo-local docs; update those docs when the answer is yes.
 
 ## Mismatch Policy
 
@@ -96,6 +97,18 @@ Before each action, check sequentially:
 
 - If the plan already captures enough status, keep state there.
 - If the work is complex, branching, or cross-repo, keep coordination state in `workflow-state.md`.
+- Default status artifacts to `<CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/status/`.
+- Use repo-local `docs/` for durable knowledge distilled from the implementation, not as the default home for execution status.
+
+## Close-Out Distillation Gate
+
+Before implementation is considered complete, answer these questions in the status artifact:
+
+1. Did the work surface durable knowledge that will help future engineers or agents?
+2. If yes, does that knowledge belong in repo-local `docs/`?
+3. If yes, has that knowledge been distilled into the right repo-local doc before close-out?
+
+If question 1 is no, no doc update is required. If question 1 is yes, implementation is not complete until the durable knowledge is captured in the right long-term location.
 
 ## Rules
 
@@ -103,7 +116,7 @@ Before each action, check sequentially:
 - Keep changes grouped by phase and repo.
 - Separate automated verification from manual verification every time.
 - Preserve artifact quality so another agent can resume cleanly.
-- Use repo-local docs and shared `engineering-context` layouts consistently.
+- Use shared `engineering-context` layouts for active execution artifacts and repo-local docs for durable knowledge consistently.
 - Do not explore alternative approaches during implementation. If the plan does not match reality, use the drift decision gate to route back to planning rather than improvising.
 
 ## Verification Recovery Protocol
@@ -136,3 +149,4 @@ When running **interactively** (human available):
 
 - Use `references/status-template.md` for phase updates.
 - Use `references/mismatch-template.md` when implementation must route back to planning or research.
+- Close implementation only after recording whether durable knowledge was distilled into repo-local docs.

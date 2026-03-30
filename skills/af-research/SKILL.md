@@ -92,32 +92,29 @@ If any boundary checklist item is both unresolved and planning-relevant, set `Pl
 
 ## Artifact Placement
 
-- Repo-local question: place the artifact in that repo's docs tree.
-- Cross-repo question: place the artifact in the shared `engineering-context` repo under the active initiative.
-- Scratch can hold temporary notes, but final findings belong in versioned Markdown.
+- Place final research artifacts in the shared `engineering-context` repo under the active initiative, even when the question is contained to one repo.
+- Use repo-local docs as supporting evidence during research and as a destination for durable knowledge distilled from the findings when that knowledge has lasting repo value.
+- Scratch can hold temporary notes, but final findings belong in versioned Markdown under the shared context root.
 
-For cross-repo work, name the active initiative folder for the clear initiative, not for the ticket alone.
+Name the active initiative folder for the clear initiative, not for the ticket alone.
 
 - With a ticket: `<clear-initiative>_<ticket-key>`
 - Without a ticket: `<clear-initiative>`
 - Keep the ticket key as a suffix only.
 - Reuse the same clear initiative phrase in the research title.
 
-Use the repo-local docs layout:
+Use repo-local docs for durable knowledge such as architecture notes, commands, pitfalls, and service cards:
 
 ```text
 docs/
   architecture/
-  exec-plans/
-    active/
-    completed/
   references/
   services/
 ```
 
 Use `docs/services/` only when a repo has multiple runtime or deployable components.
 
-Use the shared cross-repo layout:
+Use the shared context layout:
 
 ```text
 engineering-context/
@@ -126,6 +123,7 @@ engineering-context/
       workflow-state.md
       research/
       plans/
+      status/
       decisions/
   archive/
   service-catalog/
@@ -134,6 +132,9 @@ engineering-context/
 
 Use the shared-context directories as follows:
 
+- `research/`: durable research artifacts for the active initiative
+- `plans/`: approved implementation plans for the active initiative
+- `status/`: implementation status artifacts and close-out records for the active initiative
 - `decisions/`: initiative-local decision records when cross-repo tradeoffs need a durable record
 - `service-catalog/`: stable service or component reference cards reused across initiatives
 - `dependency-maps/`: durable cross-repo dependency or contract maps reused across initiatives

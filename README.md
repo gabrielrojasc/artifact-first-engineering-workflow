@@ -2,7 +2,7 @@
 
 This repo packages a reusable artifact-first engineering workflow for repo-local and cross-repo work. It is primarily a filesystem layout, a set of Markdown manuals, and installable skills that help agents and engineers work from durable artifacts instead of chat history.
 
-`Artifact-first` means the durable artifact comes before the conversation. Research notes, plans, decision records, checklists, and service docs are the primary working surface; chat is only a way to produce or refine those artifacts, not the long-term system of record.
+`Artifact-first` means the durable artifact comes before the conversation. Active research, plans, status artifacts, and decision records live in the shared context root; repo-local docs capture durable knowledge worth keeping after implementation. Chat is only a way to produce or refine those artifacts, not the long-term system of record.
 
 In this workflow, `PI` means `Plan -> Implement` and `RPI` means `Research -> Plan -> Implement`.
 
@@ -28,7 +28,7 @@ This workflow is explicitly inspired by:
 - OpenAI's [Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering)
 - HumanLayer's [advanced-context-engineering-for-coding-agents](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents)
 
-The influence shows up in artifact-first working habits, planning discipline, context compaction, and the idea that repository-local, versioned knowledge should be the main system of record.
+The influence shows up in artifact-first working habits, planning discipline, context compaction, and the idea that shared execution artifacts plus versioned durable knowledge should be the main system of record.
 
 ## Start Here
 
@@ -50,7 +50,8 @@ The `af` prefix stands for `artifact-first`.
 
 ## What This Workflow Optimizes For
 
-- Repository-local, versioned artifacts as the main source of truth
+- Shared context execution artifacts as the main source of truth for active work
+- Repo-local docs as the durable home for long-lived repo knowledge
 - Short, map-like agent guidance instead of giant manuals
 - Plans as first-class artifacts
 - Compacting useful exploration into durable Markdown

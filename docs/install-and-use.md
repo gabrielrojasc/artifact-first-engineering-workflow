@@ -2,7 +2,7 @@
 
 This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills that teach branching `PI` (`Plan -> Implement`) and `RPI` (`Research -> Plan -> Implement`) workflows.
 
-Here, `artifact-first` means the durable file is the source of truth. Plans, research notes, decisions, and reference docs should exist as versioned artifacts that agents and humans can reuse; chat should support those artifacts, not replace them.
+Here, `artifact-first` means the durable file is the source of truth. Active plans, research notes, status artifacts, and decisions should exist as versioned artifacts that agents and humans can reuse; repo-local docs should preserve the durable knowledge worth carrying forward. Chat should support those artifacts, not replace them.
 
 ## Installation
 
@@ -63,9 +63,6 @@ For repos where you want this workflow to work well, create or grow a local docs
 repo/
   docs/
     architecture/
-    exec-plans/
-      active/
-      completed/
     references/
     services/
 ```
@@ -73,12 +70,12 @@ repo/
 Use these directories as follows:
 
 - `docs/architecture/`: durable repo maps, boundaries, and important design notes
-- `docs/exec-plans/active/`: current repo-specific plans
-- `docs/exec-plans/completed/`: completed plans worth preserving
-- `docs/references/`: commands, test flows, pitfalls, glossary, local setup notes, dependency notes
+- `docs/references/`: commands, test flows, pitfalls, glossary, local setup notes, dependency notes, and durable implementation learnings worth preserving
 - `docs/services/`: service or component cards only when the repo has multiple deployable or runtime units
 
 Skip `docs/services/` in single-service repos.
+
+Repo-local docs are not the default home for active research, plans, or status tracking. Use them for durable knowledge distilled from completed work when that knowledge will help future engineers or agents.
 
 When `docs/services/` is used, each service card should cover:
 
@@ -92,7 +89,7 @@ When `docs/services/` is used, each service card should cover:
 
 ## Shared `engineering-context` Setup
 
-The canonical agent-facing layout guidance lives in [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) and [`skills/af-research/SKILL.md`](../skills/af-research/SKILL.md). For human setup, use a shared repo for cross-repo work with a shape like:
+The canonical agent-facing layout guidance lives in [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) and [`skills/af-research/SKILL.md`](../skills/af-research/SKILL.md). For human setup, use a shared repo for active execution artifacts with a shape like:
 
 ```text
 engineering-context/
@@ -101,6 +98,7 @@ engineering-context/
       workflow-state.md
       research/
       plans/
+      status/
       decisions/
   archive/
   service-catalog/
@@ -109,8 +107,9 @@ engineering-context/
 
 Use it for:
 
-- cross-repo research
-- initiative-level plans
+- research artifacts for both single-repo and cross-repo work
+- implementation plans for both PI and RPI work
+- implementation status artifacts and close-out records
 - rollout coordination
 - initiative-local decision records in `decisions/` when cross-repo tradeoffs need a durable record
 - stable service or component reference cards in `service-catalog/`
@@ -140,7 +139,7 @@ Examples:
 - which repo owns a contract or schema
 - which service is responsible for emitting or consuming an event
 - which team or component is the authoritative place to change behavior
-- whether a document belongs in repo-local docs or shared cross-repo context
+- whether a document belongs in repo-local durable docs or the shared execution context
 
 If ownership is unclear, planning should stop and request more research instead of guessing where the change belongs.
 
@@ -186,7 +185,7 @@ Choose the research mode that fits the task:
 - contract validation
 - rollout or environment validation
 
-When the work is cross-repo, place the main artifact under the shared `engineering-context` initiative folder. Use the same clear initiative phrase for the folder and the artifact title. When it is repo-local, keep the artifact in the repo's own docs tree.
+Place the main research artifact under the shared `engineering-context` initiative folder for both single-repo and cross-repo work. Use the same clear initiative phrase for the folder and the artifact title. Distill lasting repo knowledge back into repo-local docs only when the research surfaces something worth preserving there.
 
 When behavior depends on a framework or library API, detect the version from repo-local manifests, lockfiles, images, or config first. If repo evidence does not fully prove the behavior, cite the matching official docs in the research artifact instead of relying on memory.
 
@@ -196,6 +195,7 @@ Use planning to turn a task or research artifact into an actionable implementati
 
 - Use a mini-plan for PI work.
 - Use a phased plan for RPI work.
+- Store plan artifacts under the shared initiative folder's `plans/` directory.
 - Carry forward the version-sensitive docs and technology references the implementer will need when framework or library behavior matters.
 - If ownership, repo set, contract dependencies, or rollout dependencies are unclear, stop and produce a research request instead of pretending the plan is ready.
 
@@ -204,9 +204,11 @@ Use planning to turn a task or research artifact into an actionable implementati
 Implement phase by phase from an approved plan artifact.
 
 - Keep automated verification separate from manual verification.
+- Record implementation status under the shared initiative folder's `status/` directory by default.
 - If the codebase differs only in bounded implementation detail, continue and record the delta in the status artifact.
 - If the codebase differs in goal, behavior, scope, or rollout assumptions, return to planning.
 - If ownership, boundaries, or dependency understanding is wrong, return to research.
+- Before closing implementation, decide whether the work produced durable repo knowledge. Update repo-local docs only when the answer is yes.
 
 ## When To Use `workflow-state.md`
 

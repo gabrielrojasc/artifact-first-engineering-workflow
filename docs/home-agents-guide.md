@@ -7,8 +7,7 @@
 - The user's chosen repo root examples
 - The user's chosen shared `engineering-context` root
 - The user's chosen scratch root
-- A short rule for where repo-local docs live
-- A short rule for where cross-repo research and plans live
+- A short rule for where active execution artifacts live and where repo-local durable knowledge lives
 - Repo discovery expectations
 - A reminder that plans are first-class artifacts
 - A reminder that scratch is temporary and non-canonical
@@ -45,15 +44,14 @@ Do not hardcode one mandatory layout into the workflow design.
 Your home agent guidance should tell the agent to find, in each repo:
 
 - repo-local docs under `docs/`
-- execution plans under `docs/exec-plans/active/` and `docs/exec-plans/completed/`
 - supporting repo knowledge under `docs/references/`
 - service cards under `docs/services/` only when a repo has multiple runtime components
 
-It should also tell the agent to record repo-specific commands, test flows, pitfalls, and architecture notes in repo-local docs instead of relying on memory.
+It should also tell the agent to record repo-specific commands, test flows, pitfalls, architecture notes, and durable implementation learnings in repo-local docs instead of relying on memory.
 
-## Shared Cross-Repo Guidance To Include
+## Shared Execution Artifact Guidance To Include
 
-Your home guidance should tell the agent that cross-repo work belongs in a chosen shared `engineering-context` repo. The canonical installed snippet lives in [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md), and that file should stay the single source of truth for the copied home guidance.
+Your home guidance should tell the agent that active execution artifacts belong in a chosen shared `engineering-context` repo, even when the work only touches one repo. The canonical installed snippet lives in [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md), and that file should stay the single source of truth for the copied home guidance.
 
 The shared context layout should look like:
 
@@ -64,6 +62,7 @@ engineering-context/
       workflow-state.md
       research/
       plans/
+      status/
       decisions/
   archive/
   service-catalog/
@@ -72,6 +71,9 @@ engineering-context/
 
 Use the shared directories as follows:
 
+- `research/`: active research artifacts
+- `plans/`: approved implementation plans
+- `status/`: implementation status artifacts and close-out records
 - `workflow-state.md`: optional coordination state for complex, branching, or multi-repo work
 - `decisions/`: initiative-local decision records when cross-repo tradeoffs need to be preserved
 - `service-catalog/`: stable service or component reference cards reused across initiatives

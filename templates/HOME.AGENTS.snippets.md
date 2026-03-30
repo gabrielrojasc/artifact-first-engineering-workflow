@@ -18,7 +18,7 @@ Replace these placeholders before use:
 ## Workspace Conventions
 
 - Code repositories live under `<REPOS_ROOT>`.
-- Shared cross-repo engineering context lives under `<CONTEXT_ROOT>`.
+- Shared engineering context lives under `<CONTEXT_ROOT>`.
 - Ephemeral scratch work lives under `<SCRATCH_ROOT>` -- not a second documentation system.
 
 ## Repo Discovery
@@ -29,8 +29,9 @@ Replace these placeholders before use:
 ## Docs & Planning Layout
 
 - Repo docs live under `docs/`; supporting knowledge under `docs/references/`; `docs/services/` only for multi-component repos.
-- Repo-local plans live under `docs/exec-plans/{active,completed}/`.
-- Cross-repo plans live under `<CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/`; decisions in a `decisions/` subfolder when cross-repo tradeoffs need a durable record.
+- Execution artifacts default to `<CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/` for both single-repo and cross-repo work.
+- Use repo-local docs for durable knowledge worth preserving from completed work: architecture notes, commands, pitfalls, service cards, and implementation learnings with ongoing value.
+- Use `research/`, `plans/`, and `status/` under the initiative folder for active execution artifacts; keep `decisions/` for tradeoffs that need a durable record.
 - Stable service reference cards go in `<CONTEXT_ROOT>/service-catalog/`; cross-repo dependency maps in `<CONTEXT_ROOT>/dependency-maps/`.
 - Use `workflow-state.md` only for complex, branching, or multi-repo coordination.
 

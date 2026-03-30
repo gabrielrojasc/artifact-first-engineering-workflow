@@ -5,6 +5,11 @@
 - Phase:
 - Repo or repos:
 
+## Pre-edit checkpoint
+
+- Approach:
+- Most likely failure mode:
+
 ## Changes made
 
 - Change 1
@@ -31,6 +36,13 @@
 - [ ] Check description (who verifies, what to look for, pass criteria)
 - Required: yes | deferred
 - If deferred, reason:
+
+## Durable knowledge distillation
+
+- Durable knowledge surfaced: yes | no
+- Where it belongs: repo-local docs | no doc update needed
+- Update made:
+- If no update was needed, why:
 
 ## Next action
 
