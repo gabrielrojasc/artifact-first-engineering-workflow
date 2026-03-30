@@ -4,6 +4,10 @@
 
 Describe the intended outcome.
 
+## Design decisions
+
+- Decision 1: resolved direction and rationale
+
 ## Scope
 
 - In scope

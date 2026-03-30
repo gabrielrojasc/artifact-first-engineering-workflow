@@ -46,6 +46,26 @@ Combine modes when one pass reveals gaps. A repo discovery pass that uncovers un
 7. Compact the findings into a durable Markdown artifact.
 8. End with a clear readiness call and next step.
 
+## Sub-Agent Delegation
+
+When research scope is broad -- multiple repos, large codebase surface, or several disjoint questions -- delegate bounded discovery tasks to sub-agents rather than consuming the main agent's context on raw exploration.
+
+### When to delegate
+
+- The research question spans more than two repos or services.
+- A single discovery pass would require reading more source files than the artifact-level pass (step 3) already covered.
+- Multiple independent questions can be investigated in parallel.
+
+### Delegation requirements
+
+- Each delegation must have a clear question and a bounded scope (specific repo, specific contract, specific boundary).
+- Sub-agents return compact findings, not raw file contents or broad code dumps.
+- Sub-agents follow the same rules as the main research pass: document what IS, not opinions or proposals.
+
+### Synthesis
+
+The main agent synthesizes sub-agent findings into the research artifact. Sub-agent outputs are working material, not final artifacts. Conflicting findings across sub-agents must be reconciled or flagged as open questions before the sufficiency gate.
+
 ## Rules
 
 - Document current reality, not desired architecture.

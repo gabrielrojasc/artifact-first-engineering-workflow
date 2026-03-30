@@ -4,6 +4,10 @@
 
 Describe the intended outcome.
 
+## Key decisions
+
+- Decision 1: resolved direction and rationale
+
 ## Scope
 
 - In scope

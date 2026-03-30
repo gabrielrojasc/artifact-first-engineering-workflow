@@ -17,12 +17,22 @@ Planning should not paper over unclear ownership or weak evidence.
 ## Workflow
 
 1. Read the task and any research artifacts fully.
-2. Verify the repo set, ownership, contracts, and rollout constraints.
-3. Carry forward any version-grounded framework or library references needed for implementation, or gather them directly for PI work when research does not exist.
-4. Decide whether the work is PI or RPI.
-5. Produce the smallest plan shape that fits the risk.
-6. Separate automated verification from manual verification.
-7. If key dependencies are unclear, stop and emit a research request.
+2. If no prior research artifact exists and ownership, boundaries, or contracts are unclear, delegate inline research (see below).
+3. Verify the repo set, ownership, contracts, and rollout constraints.
+4. Carry forward any version-grounded framework or library references needed for implementation, or gather them directly for PI work when research does not exist.
+5. Run Interactive Alignment (see below).
+6. Decide whether the work is PI or RPI. Produce the smallest plan shape that fits the risk.
+7. Separate automated verification from manual verification.
+
+## Interactive Alignment
+
+Three mandatory steps before writing the plan.
+
+**Questioning**: Present your informed understanding of the task and surface design decisions as explicit options (Q1: A or B? Q2: X or Y?). Do not proceed until the human selects directions.
+
+**Design Discussion**: Present current state, desired end state, discovered patterns, and design options with pros/cons in-chat. The human picks the direction. Resolved decisions get recorded in the plan's Design decisions section.
+
+**Structure Approval**: Present a plan outline with phased breakdown and get explicit approval before writing the full plan. For mini-plans, present the intended edits and verify scope.
 
 ## Planning Modes
 
@@ -78,16 +88,15 @@ When returning from implementation to planning (`I -> P` or `I -> R -> P`):
 - Carry forward deltas recorded during bounded drift into the revised plan so the plan reflects actual state.
 - Note in the plan that this is a revision and reference the prior plan artifact.
 
-## Research Stop Condition
+## Inline Research
 
-Do not emit a final plan if any of these remain unclear:
+When no prior research artifact exists and ownership, boundaries, or contracts are unclear:
 
-- repo set
-- ownership boundary
-- contract dependencies
-- rollout dependencies
+- Delegate research to sub-agent(s) using af-research skill. Each delegation should have a clear question and bounded scope.
+- The main agent synthesizes findings and proceeds to Interactive Alignment.
+- If research surfaces blockers requiring human input (e.g., cannot determine ownership, conflicting evidence), surface those in the Questioning step rather than stopping silently.
 
-In that case, emit a research request using `references/research-request-template.md` and stop.
+Standalone af-research remains the right tool for pure discovery, audits, or when a research artifact is explicitly desired without planning.
 
 ## State Placement
 
