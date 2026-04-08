@@ -10,7 +10,9 @@ Replace these placeholders before use:
 |---|---|
 | `<REPOS_ROOT>` | `~/git`, `~/src`, `~/code`, `~/work/repos` |
 | `<CONTEXT_ROOT>` | `~/git/engineering-context`, `~/src/engineering-context` |
+| `<WORKTREES_ROOT>` | `~/worktrees`, `~/tmp/worktrees` |
 | `<SCRATCH_ROOT>` | `~/tmp/_ai_scratch`, `~/scratch/_ai`, `/tmp/ai-scratch` |
+| `<SKILLS_ROOT>` | `~/.agents/skills`, `~/.claude/skills` |
 
 ```md
 # Default Agent Workflow
@@ -19,6 +21,7 @@ Replace these placeholders before use:
 
 - Code repositories live under `<REPOS_ROOT>`.
 - Shared engineering context lives under `<CONTEXT_ROOT>`.
+- Implementation worktrees live under `<WORKTREES_ROOT>`.
 - Ephemeral scratch work lives under `<SCRATCH_ROOT>` -- not a second documentation system.
 
 ## Repo Discovery
@@ -29,7 +32,8 @@ Replace these placeholders before use:
 ## Docs & Planning Layout
 
 - Repo docs live under `docs/`; supporting knowledge under `docs/references/`; `docs/services/` only for multi-component repos.
-- Execution artifacts default to `<CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/` for both single-repo and cross-repo work.
+- Execution artifacts default to `<CONTEXT_ROOT>/active/NNNN_<clear-initiative>[_<ticket-key>]/` for both single-repo and cross-repo work.
+- `NNNN` is a zero-padded sequence number assigned globally across `active/` and `archive/`. Scan both directories for the highest existing number and increment by one.
 - Use repo-local docs for durable knowledge worth preserving from completed work: architecture notes, commands, pitfalls, service cards, and implementation learnings with ongoing value.
 - Use `research/`, `plans/`, and `status/` under the initiative folder for active execution artifacts; keep `decisions/` for tradeoffs that need a durable record.
 - Stable service reference cards go in `<CONTEXT_ROOT>/service-catalog/`; cross-repo dependency maps in `<CONTEXT_ROOT>/dependency-maps/`.
@@ -55,4 +59,31 @@ Human-facing artifacts -- plans, research, decision records -- must optimize for
 - Use **bold** for key terms on first mention and for emphasis.
 - Use Mermaid diagrams for flows, dependency graphs, and architecture when visual structure aids comprehension over prose.
 - Consistent terminology throughout the artifact. Pick one term for a concept and keep it.
+
+## Implementation Workspace
+
+Do not create branches or edit code directly in `<REPOS_ROOT>`. Use git worktrees so each initiative gets an isolated working copy and the main checkouts stay clean.
+
+Setup: run the installed `af-implement` helper script. It assigns the next sequence number, creates the initiative folder structure, fetches all repos, and creates worktrees under `<WORKTREES_ROOT>/NNNN/<repo>/`.
+
+```bash
+<SKILLS_ROOT>/af-implement/scripts/init-initiative.sh \
+  --repos-root <REPOS_ROOT> \
+  --context-root <CONTEXT_ROOT> \
+  --worktrees-root <WORKTREES_ROOT> \
+  [--branch-prefix feature] \
+  <initiative-name> [ticket-key]
+```
+
+All implementation happens inside `<WORKTREES_ROOT>/NNNN/<repo>/`. Branch naming follows the repo's branch prefix convention (e.g., `feature/`, `bugfix/`, `hotfix/`).
+
+Cleanup: run the installed `af-archive` helper script to remove worktrees, delete local branches, and move the initiative to `<CONTEXT_ROOT>/archive/`.
+
+```bash
+<SKILLS_ROOT>/af-archive/scripts/archive-initiative.sh \
+  --repos-root <REPOS_ROOT> \
+  --context-root <CONTEXT_ROOT> \
+  --worktrees-root <WORKTREES_ROOT> \
+  [--delete-remote] <NNNN>
+```
 ```

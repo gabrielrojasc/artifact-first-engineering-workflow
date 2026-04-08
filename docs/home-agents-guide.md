@@ -6,6 +6,7 @@
 
 - The user's chosen repo root examples
 - The user's chosen shared `engineering-context` root
+- The user's chosen worktrees root
 - The user's chosen scratch root
 - A short rule for where active execution artifacts live and where repo-local durable knowledge lives
 - Repo discovery expectations
@@ -31,11 +32,21 @@ Examples for shared engineering context:
 - `~/src/engineering-context`
 - `~/work/engineering-context`
 
+Examples for implementation worktrees:
+
+- `~/worktrees`
+- `~/tmp/worktrees`
+
 Examples for scratch:
 
 - `~/tmp/_ai_scratch`
 - `~/scratch/_ai`
 - `/tmp/ai-scratch`
+
+Examples for installed skills:
+
+- `~/.agents/skills`
+- `~/.claude/skills`
 
 Do not hardcode one mandatory layout into the workflow design.
 
@@ -58,7 +69,7 @@ The shared context layout should look like:
 ```text
 engineering-context/
   active/
-    <clear-initiative>[_<ticket-key>]/
+    NNNN_<clear-initiative>[_<ticket-key>]/
       workflow-state.md
       research/
       plans/
@@ -68,6 +79,8 @@ engineering-context/
   service-catalog/
   dependency-maps/
 ```
+
+`NNNN` is a zero-padded sequence number assigned globally across `active/` and `archive/`. Scan both for the highest existing number and increment by one.
 
 Use the shared directories as follows:
 
@@ -81,17 +94,32 @@ Use the shared directories as follows:
 
 `workflow-state.md` is optional. Use it only when the work is complex enough that coordination state should live outside the plan itself.
 
-Name the initiative folder for the work, not for the ticket alone.
+Name the initiative folder for the work, not for the ticket alone. Prepend the next available sequence number.
 
-- With a ticket: `<clear-initiative>_<ticket-key>`
-- Without a ticket: `<clear-initiative>`
+- With a ticket: `NNNN_<clear-initiative>_<ticket-key>`
+- Without a ticket: `NNNN_<clear-initiative>`
 - Keep the ticket key as a suffix only, never the whole folder name or the prefix.
 
 Examples:
 
-- `header-rollout_GATE-123`
-- `checkout-retry-policy_PAY-204`
-- `search-ranking-tuneup`
+- `0001_header-rollout_GATE-123`
+- `0002_checkout-retry-policy_PAY-204`
+- `0003_search-ranking-tuneup`
+
+## Implementation Workspace Guidance To Include
+
+Your home guidance should tell the agent to use git worktrees for implementation instead of branching directly in the repos root. This keeps the main checkouts clean and gives each initiative an isolated working copy.
+
+The worktree layout should look like:
+
+```text
+<worktrees-root>/
+  NNNN/
+    <repo-a>/
+    <repo-b>/
+```
+
+The `NNNN` matches the initiative's sequence number in `engineering-context/active/`. The installed `af-implement` helper at `<SKILLS_ROOT>/af-implement/scripts/init-initiative.sh` handles the full setup: assigns the sequence number, creates the initiative folder, fetches all repos, and creates worktrees. The installed `af-archive` helper at `<SKILLS_ROOT>/af-archive/scripts/archive-initiative.sh` handles cleanup: removes worktrees, deletes branches, and moves the initiative to `archive/`.
 
 ## Readability Guidance To Include
 

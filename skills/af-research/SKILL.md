@@ -96,10 +96,11 @@ If any boundary checklist item is both unresolved and planning-relevant, set `Pl
 - Use repo-local docs as supporting evidence during research and as a destination for durable knowledge distilled from the findings when that knowledge has lasting repo value.
 - Scratch can hold temporary notes, but final findings belong in versioned Markdown under the shared context root.
 
-Name the active initiative folder for the clear initiative, not for the ticket alone.
+Name the active initiative folder with a sequence number and the clear initiative, not for the ticket alone.
 
-- With a ticket: `<clear-initiative>_<ticket-key>`
-- Without a ticket: `<clear-initiative>`
+- With a ticket: `NNNN_<clear-initiative>_<ticket-key>`
+- Without a ticket: `NNNN_<clear-initiative>`
+- `NNNN` is a zero-padded sequence number. Scan both `active/` and `archive/` for the highest existing number and increment by one.
 - Keep the ticket key as a suffix only.
 - Reuse the same clear initiative phrase in the research title.
 
@@ -119,7 +120,7 @@ Use the shared context layout:
 ```text
 engineering-context/
   active/
-    <clear-initiative>[_<ticket-key>]/
+    NNNN_<clear-initiative>[_<ticket-key>]/
       workflow-state.md
       research/
       plans/

@@ -104,9 +104,10 @@ Standalone af-research remains the right tool for pure discovery, audits, or whe
 
 - Simple work: keep state inside the plan itself.
 - Complex multi-repo or branching work: add `workflow-state.md` in the shared initiative folder.
-- Name shared initiative folders with the clear initiative first: `<clear-initiative>_<ticket-key>` when a ticket exists, otherwise `<clear-initiative>`.
+- Name shared initiative folders with a sequence number and the clear initiative: `NNNN_<clear-initiative>_<ticket-key>` when a ticket exists, otherwise `NNNN_<clear-initiative>`.
+- `NNNN` is a zero-padded sequence number. Scan both `active/` and `archive/` for the highest existing number and increment by one.
 - Keep any ticket key as a suffix only, and reuse the same clear initiative phrase in the plan title.
-- Store plan artifacts under `<CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/plans/` for both single-repo and cross-repo work.
+- Store plan artifacts under `<CONTEXT_ROOT>/active/NNNN_<clear-initiative>[_<ticket-key>]/plans/` for both single-repo and cross-repo work.
 - Treat repo-local `docs/` as durable knowledge storage, not the default location for execution plans.
 
 Keep `workflow-state.md` small and coordination-oriented.

@@ -18,15 +18,33 @@ Supported exits:
 ## Workflow
 
 1. Read the approved plan completely.
-2. Read the files and docs named by the current phase.
-3. Confirm repo order, ownership, and dependency expectations.
-4. Reuse the version-grounded references from the plan when framework or library behavior matters.
-5. Before editing code, state in the status artifact: the approach (one sentence) and the most likely failure mode (one sentence).
-6. Implement one phase at a time.
-7. Run automated verification before advancing.
-8. Record manual verification separately.
-9. Route back to planning or research when reality diverges beyond bounded detail drift.
-10. Before closing implementation, decide whether the work surfaced durable knowledge that belongs in repo-local docs; update those docs when the answer is yes.
+2. Set up the implementation workspace (see below).
+3. Read the files and docs named by the current phase.
+4. Confirm repo order, ownership, and dependency expectations.
+5. Reuse the version-grounded references from the plan when framework or library behavior matters.
+6. Before editing code, state in the status artifact: the approach (one sentence) and the most likely failure mode (one sentence).
+7. Implement one phase at a time. All edits happen in the worktree copies, not in the repos root.
+8. Run automated verification before advancing.
+9. Record manual verification separately.
+10. Route back to planning or research when reality diverges beyond bounded detail drift.
+11. Before closing implementation, decide whether the work surfaced durable knowledge that belongs in repo-local docs; update those docs when the answer is yes.
+
+### Implementation Workspace Setup
+
+Before editing any code, run the installed `af-implement` helper script to create the initiative folder and worktrees. The script is idempotent: if the initiative folder already exists (e.g., created during planning or research), it reuses the existing folder and sequence number and only creates missing worktrees.
+
+```bash
+$HOME/.agents/skills/af-implement/scripts/init-initiative.sh \
+  --repos-root <REPOS_ROOT> \
+  --context-root <CONTEXT_ROOT> \
+  --worktrees-root <WORKTREES_ROOT> \
+  [--branch-prefix feature] \
+  <initiative-name> [ticket-key]
+```
+
+If worktrees for this initiative already exist (e.g., resuming from a handoff), verify they are up to date with the remote default branch and skip creation.
+
+All implementation happens inside `<worktrees-root>/NNNN/<repo>/`, not in the repos root.
 
 ## Mismatch Policy
 
@@ -97,7 +115,7 @@ Before each action, check sequentially:
 
 - If the plan already captures enough status, keep state there.
 - If the work is complex, branching, or cross-repo, keep coordination state in `workflow-state.md`.
-- Default status artifacts to `<CONTEXT_ROOT>/active/<clear-initiative>[_<ticket-key>]/status/`.
+- Default status artifacts to `<CONTEXT_ROOT>/active/NNNN_<clear-initiative>[_<ticket-key>]/status/`.
 - Use repo-local `docs/` for durable knowledge distilled from the implementation, not as the default home for execution status.
 
 ## Close-Out Distillation Gate

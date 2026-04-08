@@ -36,7 +36,7 @@ It will not:
 
 When those paths already exist, the installer prints a warning and tells you which doc to review so you can merge the workflow rules yourself.
 
-The installed `~/.codex/AGENTS.md` is a starter file, not a finished workstation config. It still contains placeholders such as `<CHOSEN_REPOS_ROOT>`, `<CHOSEN_ENGINEERING_CONTEXT_ROOT>`, and `<CHOSEN_SCRATCH_ROOT>`. Replace them explicitly after installation.
+The installed `~/.codex/AGENTS.md` is a starter file, not a finished workstation config. It still contains placeholders such as `<REPOS_ROOT>`, `<CONTEXT_ROOT>`, `<WORKTREES_ROOT>`, `<SCRATCH_ROOT>`, and `<SKILLS_ROOT>`. Replace them explicitly after installation.
 
 When `~/.claude/CLAUDE.md` is created by the installer, it is intentionally a symlink to `~/.codex/AGENTS.md` so both tools read the same guidance file.
 
@@ -49,6 +49,7 @@ The canonical workflow definitions live in these folders:
 - [`skills/af-implement/`](../skills/af-implement/)
 - [`skills/af-iterate/`](../skills/af-iterate/)
 - [`skills/af-handoff/`](../skills/af-handoff/)
+- [`skills/af-archive/`](../skills/af-archive/)
 
 Each skill contains:
 
@@ -96,7 +97,7 @@ The canonical agent-facing layout guidance lives in [`templates/HOME.AGENTS.snip
 ```text
 engineering-context/
   active/
-    <clear-initiative>[_<ticket-key>]/
+    NNNN_<clear-initiative>[_<ticket-key>]/
       workflow-state.md
       research/
       plans/
@@ -106,6 +107,8 @@ engineering-context/
   service-catalog/
   dependency-maps/
 ```
+
+`NNNN` is a zero-padded sequence number assigned globally. Scan both `active/` and `archive/` for the highest existing number and increment by one. This gives a chronological view of initiatives across the entire history.
 
 Use it for:
 
@@ -117,20 +120,20 @@ Use it for:
 - stable service or component reference cards in `service-catalog/`
 - durable cross-repo dependency or contract maps in `dependency-maps/`
 
-Name active initiative folders for the work at hand, not for the ticket alone.
+Name active initiative folders for the work at hand, not for the ticket alone. Prepend the next available sequence number.
 
-- Default pattern with a ticket: `<clear-initiative>_<ticket-key>`
-- Default pattern without a ticket: `<clear-initiative>`
+- Default pattern with a ticket: `NNNN_<clear-initiative>_<ticket-key>`
+- Default pattern without a ticket: `NNNN_<clear-initiative>`
 - Keep the clear-initiative part short, readable, and understandable at a glance.
 - Keep the ticket key as a suffix only when it helps traceability.
 
 Examples:
 
-- `header-rollout_GATE-123`
-- `checkout-retry-policy_PAY-204`
-- `search-ranking-tuneup`
+- `0001_header-rollout_GATE-123`
+- `0002_checkout-retry-policy_PAY-204`
+- `0003_search-ranking-tuneup`
 
-Avoid ticket-led names such as `GATE-123` or `GATE-123_header-rollout`.
+Avoid ticket-led names such as `GATE-123` or `0001_GATE-123_header-rollout`.
 
 ## What Ownership Means
 
@@ -215,6 +218,40 @@ Implement phase by phase from an approved plan artifact.
 - If the codebase differs in goal, behavior, scope, or rollout assumptions, return to planning.
 - If ownership, boundaries, or dependency understanding is wrong, return to research.
 - Before closing implementation, decide whether the work produced durable repo knowledge. Update repo-local docs only when the answer is yes.
+
+### Implementation Workspace
+
+Do not create branches or edit code directly in the repos root. Use git worktrees so each initiative gets an isolated working copy and the main checkouts stay clean on their default branch.
+
+Run the `af-implement` helper script to set up both the initiative folder and worktrees in one step:
+
+```bash
+skills/af-implement/scripts/init-initiative.sh \
+  --repos-root <REPOS_ROOT> \
+  --context-root <CONTEXT_ROOT> \
+  --worktrees-root <WORKTREES_ROOT> \
+  [--branch-prefix feature] \
+  <initiative-name> [ticket-key]
+```
+
+The script:
+
+1. Scans `active/` and `archive/` for the next sequence number.
+2. Creates the initiative folder with `research/`, `plans/`, `status/`, and `decisions/` subdirectories.
+3. Fetches every repo under the repos root except the configured context repo.
+4. Creates a worktree per repo under `<worktrees-root>/NNNN/<repo>/` with a properly named branch.
+
+All implementation happens inside the worktrees. Branch naming follows the repo's branch prefix convention (`feature/`, `bugfix/`, `hotfix/`, etc.).
+
+Cleanup: run the `af-archive` helper script to remove worktrees, delete local branches, and move the initiative folder to `archive/`:
+
+```bash
+skills/af-archive/scripts/archive-initiative.sh \
+  --repos-root <REPOS_ROOT> \
+  --context-root <CONTEXT_ROOT> \
+  --worktrees-root <WORKTREES_ROOT> \
+  [--delete-remote] <NNNN>
+```
 
 ## When To Use `workflow-state.md`
 
