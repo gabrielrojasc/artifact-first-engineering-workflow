@@ -42,6 +42,7 @@ Replace these placeholders before use:
 ## Workflow Rules
 
 - Plans are first-class artifacts. Compact useful exploration into durable Markdown.
+- The structure-approval proposal is also a first-class Markdown artifact, not just a chat message.
 - Distinguish automated verification from manual verification.
 - Verify framework/library behavior against repo-detected versions and official docs, not memory.
 - When ownership, boundaries, or evidence are unclear, research before guessing.
@@ -58,6 +59,7 @@ Human-facing artifacts -- plans, research, decision records -- must optimize for
 - Write headings that state the finding or decision, not just the topic (prefer "Auth middleware stores tokens in plaintext" over "Auth middleware analysis").
 - Use **bold** for key terms on first mention and for emphasis.
 - Use Mermaid diagrams for flows, dependency graphs, and architecture when visual structure aids comprehension over prose.
+- For planning artifacts, include Mermaid sequence diagrams in both the proposal and the final plan when they clarify flow, rollout, or ownership; skip them only when they would add no value.
 - Consistent terminology throughout the artifact. Pick one term for a concept and keep it.
 
 ## Implementation Workspace

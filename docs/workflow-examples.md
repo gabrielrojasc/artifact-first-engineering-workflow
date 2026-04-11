@@ -8,8 +8,8 @@ Task: add a missing timeout to one HTTP client in a single service repo.
 
 Recommended path:
 
-1. `af-plan` runs a light Questioning, Design Discussion, and Structure Approval pass, then writes a mini-plan under `engineering-context/active/0001_http-client-timeout/plans/`.
-2. The plan lists the target files, any version-sensitive library docs the implementer should trust, automated checks, and manual verification.
+1. `af-plan` runs a light Questioning, Design Discussion, and Structure Approval pass, writes a mini-plan proposal under `engineering-context/active/0001_http-client-timeout/plans/`, gets approval, and then writes the final mini-plan.
+2. The proposal and final plan include a Mermaid sequence diagram when it helps explain the request flow or responsibility handoff. Both artifacts also list the target files, any version-sensitive library docs the implementer should trust, automated checks, and manual verification.
 3. `af-implement` creates worktrees under `<worktrees-root>/0001/` for every repo except the configured context repo, executes the change, and records phase status under `engineering-context/active/0001_http-client-timeout/status/`.
 4. If the change surfaced no durable repo knowledge beyond the implementation itself, no repo-local docs update is required at close-out.
 
@@ -29,8 +29,8 @@ Recommended path:
 1. `af-plan` receives the task and sees that repo ownership, contract boundaries, and rollout order are still unclear.
 2. `af-plan` delegates bounded `af-research` work, which writes a research artifact under `engineering-context/active/0002_header-rollout_GATE-123/research/`.
 3. The research identifies the owning repo for the header contract, the downstream consumers, the rollout constraints, and any version-sensitive framework behavior that needs official docs.
-4. `af-plan` then runs Questioning, Design Discussion, and Structure Approval with the human, and writes a phased RPI plan under `engineering-context/active/0002_header-rollout_GATE-123/plans/`.
-5. The plan separates producer-first and consumer rollout steps and records automated and manual verification.
+4. `af-plan` then runs Questioning, Design Discussion, and Structure Approval with the human, writes a phased proposal under `engineering-context/active/0002_header-rollout_GATE-123/plans/`, gets approval, and then writes the phased RPI plan.
+5. The proposal and final plan include a Mermaid sequence diagram when it clarifies the rollout or interaction flow. The final plan separates producer-first and consumer rollout steps and records automated and manual verification.
 6. `workflow-state.md` is added because the work spans multiple repos and rollout coordination matters.
 7. `af-implement` creates worktrees under `<worktrees-root>/0002/` for every repo except the configured context repo, executes one phase at a time, and updates the status artifact under `engineering-context/active/0002_header-rollout_GATE-123/status/`.
 8. Close-out distills any lasting gateway or service rollout knowledge into the relevant repo docs before the work is considered complete.

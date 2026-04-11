@@ -26,13 +26,13 @@ Planning should not paper over unclear ownership or weak evidence.
 
 ## Interactive Alignment
 
-Three mandatory steps before writing the plan.
+Three mandatory steps before writing the final plan.
 
 **Questioning**: Present your informed understanding of the task and surface design decisions as explicit options (Q1: A or B? Q2: X or Y?). Do not proceed until the human selects directions.
 
-**Design Discussion**: Present current state, desired end state, discovered patterns, and design options with pros/cons in-chat. The human picks the direction. Resolved decisions get recorded in the plan's Design decisions section.
+**Design Discussion**: Present current state, desired end state, discovered patterns, and design options with pros/cons in-chat. The human picks the direction. Resolved decisions get recorded in the proposal and then in the final plan.
 
-**Structure Approval**: Present a plan outline with phased breakdown and get explicit approval before writing the full plan. For mini-plans, present the intended edits and verify scope.
+**Structure Approval**: Write the plan proposal to a Markdown artifact before asking for approval. Present that proposal, including the phased breakdown or intended edits, and get explicit approval before writing the final plan. Proposal and final plan artifacts should both include a Mermaid sequence diagram when one clarifies flow, rollout, or responsibility. Skip the diagram only when it would add no meaningful information.
 
 ## Planning Modes
 
@@ -108,12 +108,15 @@ Standalone af-research remains the right tool for pure discovery, audits, or whe
 - `NNNN` is a zero-padded sequence number. Scan both `active/` and `archive/` for the highest existing number and increment by one.
 - Keep any ticket key as a suffix only, and reuse the same clear initiative phrase in the plan title.
 - Store plan artifacts under `<CONTEXT_ROOT>/active/NNNN_<clear-initiative>[_<ticket-key>]/plans/` for both single-repo and cross-repo work.
+- Write the structure-approval proposal as a Markdown artifact in that same `plans/` directory before writing the final plan.
 - Treat repo-local `docs/` as durable knowledge storage, not the default location for execution plans.
 
 Keep `workflow-state.md` small and coordination-oriented.
 
 ## Output
 
+- Use `references/mini-plan-proposal-template.md` for PI proposal artifacts.
+- Use `references/phased-plan-proposal-template.md` for RPI proposal artifacts.
 - Use `references/mini-plan-template.md` for PI work.
 - Use `references/phased-plan-template.md` for RPI work.
 - Use `references/research-request-template.md` only when inline research still leaves planning-blocking truth gaps.
@@ -125,4 +128,6 @@ Keep `workflow-state.md` small and coordination-oriented.
 - Record what is automated verification versus manual verification.
 - When implementation depends on framework or library behavior, include the detected version and official docs the implementer should rely on.
 - If rollout order matters, say so explicitly.
+- Proposal and final plan artifacts should be Markdown, not chat-only summaries.
+- Include Mermaid sequence diagrams in the proposal and final plan unless a diagram would be artificial or useless.
 - Follow repo-local durable-docs and shared-context execution layouts instead of inventing ad hoc locations.

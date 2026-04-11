@@ -1,14 +1,14 @@
-# Mini-Plan: <topic>
+# Mini-Plan Proposal: <topic>
 
-## Goal
+## Recommendation
 
-Describe the intended outcome.
+State the proposed approach in one or two sentences.
 
-## Key decisions
+## Proposed decisions
 
-- Decision 1: resolved direction and rationale
+- Decision 1: proposed direction and rationale
 
-## Scope
+## Proposed scope
 
 - In scope
 
@@ -33,19 +33,6 @@ sequenceDiagram
     Service-->>User: Response
 ```
 
-## Implementation references
+## Open questions for approval
 
-- Version-sensitive technology notes
-- Official docs to reuse during implementation
-
-## Automated verification
-
-- Check 1
-
-## Manual verification
-
-- Check 1
-
-## Exit criteria
-
-- Criterion 1
+- Question 1

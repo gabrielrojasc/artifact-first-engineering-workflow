@@ -130,6 +130,7 @@ The key principles to include:
 - **Front-load conclusions**: each section starts with the takeaway, then the evidence.
 - **Terse prose**: short sentences, no filler phrases, concrete references over vague descriptions.
 - **Structured data**: bullet lists for related items, tables for comparisons, Mermaid diagrams for flows and dependency graphs.
+- **Planning artifacts**: write both the structure-approval proposal and the final approved plan to Markdown; include Mermaid sequence diagrams in both when they clarify flow, rollout, or ownership, and skip them only when they would add no value.
 - **Scannable headings**: headings that state findings or decisions, not just topics.
 - **Consistent terminology**: one term per concept throughout the artifact.
 

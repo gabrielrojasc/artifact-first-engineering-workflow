@@ -25,6 +25,21 @@ Describe the intended outcome.
 - Version-sensitive technology notes
 - Official docs to reuse during implementation
 
+## Sequence diagram
+
+Use a Mermaid sequence diagram when it clarifies request flow, ownership handoffs, rollout order, or system interactions. If a diagram would add no value, say so explicitly.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Gateway
+    participant Service
+    Client->>Gateway: Request
+    Gateway->>Service: Forward request
+    Service-->>Gateway: Response
+    Gateway-->>Client: Response
+```
+
 ## Phases
 
 Repeat this phase block for each phase in the rollout.

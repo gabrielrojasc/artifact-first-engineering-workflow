@@ -201,9 +201,11 @@ When behavior depends on a framework or library API, detect the version from rep
 Use planning to turn a task or research artifact into an actionable implementation path.
 
 - `af-plan` performs QRSPI-style alignment before writing the plan: Questioning, Design Discussion, and Structure Approval.
+- The structure-approval proposal is itself a Markdown artifact under `plans/`, not just an in-chat outline.
 - Use a mini-plan for the PI path.
 - Use a phased plan for the RPI path.
 - Store plan artifacts under the shared initiative folder's `plans/` directory.
+- Proposal and final plan artifacts should both include a Mermaid sequence diagram when a diagram makes the flow, rollout, or responsibilities clearer. Skip it only when a diagram would be artificial or useless.
 - Carry forward the version-sensitive docs and technology references the implementer will need when framework or library behavior matters.
 - If no prior research artifact exists and ownership, repo set, contract dependencies, or rollout dependencies are unclear, delegate inline research instead of pretending the plan is ready.
 - Use standalone `af-research` when the task is pure discovery, audit, or boundary mapping without immediate planning.
