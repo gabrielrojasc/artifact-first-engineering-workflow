@@ -272,6 +272,91 @@ resolve_physical_path() {
   )
 }
 
+default_parallel_jobs() {
+  local cpu_count=""
+
+  if command -v getconf >/dev/null 2>&1; then
+    cpu_count="$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)"
+  fi
+
+  if [ -z "$cpu_count" ] && command -v nproc >/dev/null 2>&1; then
+    cpu_count="$(nproc 2>/dev/null || true)"
+  fi
+
+  if [ -z "$cpu_count" ] && command -v sysctl >/dev/null 2>&1; then
+    cpu_count="$(sysctl -n hw.logicalcpu 2>/dev/null || true)"
+  fi
+
+  if ! [[ "$cpu_count" =~ ^[0-9]+$ ]] || [ "$cpu_count" -lt 1 ]; then
+    cpu_count=4
+  fi
+
+  if [ "$cpu_count" -gt 8 ]; then
+    cpu_count=8
+  fi
+
+  printf '%s' "$cpu_count"
+}
+
+running_job_count() {
+  jobs -pr | wc -l | tr -d ' '
+}
+
+wait_for_available_slot() {
+  local max_jobs="$1"
+
+  while [ "$(running_job_count)" -ge "$max_jobs" ]; do
+    sleep 0.1
+  done
+}
+
+process_repo_worktree() {
+  local repo_path="$1"
+  local repo_name="$2"
+  local wt_dest="$3"
+  local branch_name="$4"
+  local log_file="$5"
+  local status_file="$6"
+  local outcome="skipped"
+  local default_branch=""
+
+  {
+    if git -C "$repo_path" show-ref --verify --quiet "refs/heads/${branch_name}"; then
+      log_command "git -C ${repo_path} worktree add ${wt_dest} ${branch_name}"
+      if git -C "$repo_path" worktree add "$wt_dest" "$branch_name" 2>/dev/null; then
+        log_success "Created worktree: ${repo_name} -> ${wt_dest} (branch: ${branch_name})"
+        outcome="created"
+      else
+        log_warning "Failed to reattach existing branch for ${repo_name}"
+      fi
+    else
+      # Fetch before creating a new branch from the remote default branch.
+      log_command "git -C ${repo_path} fetch"
+      if ! git -C "$repo_path" fetch --quiet 2>/dev/null; then
+        log_warning "Fetch failed for ${repo_name}, skipping"
+        printf '%s\n' "$outcome" >"$status_file"
+        return 0
+      fi
+
+      if ! default_branch="$(detect_default_branch "$repo_path")"; then
+        log_warning "Cannot detect default branch for ${repo_name}, skipping"
+        printf '%s\n' "$outcome" >"$status_file"
+        return 0
+      fi
+
+      log_command "git -C ${repo_path} worktree add ${wt_dest} -b ${branch_name} origin/${default_branch}"
+      if git -C "$repo_path" worktree add "$wt_dest" -b "$branch_name" "origin/${default_branch}" 2>/dev/null; then
+        log_success "Created worktree: ${repo_name} -> ${wt_dest} (branch: ${branch_name})"
+        outcome="created"
+      else
+        log_warning "Failed to create worktree for ${repo_name}"
+      fi
+    fi
+
+    printf '%s\n' "$outcome" >"$status_file"
+  } >"$log_file" 2>&1
+}
+
 # ---------------------------------------------------------------------------
 # Create worktrees
 # ---------------------------------------------------------------------------
@@ -282,6 +367,10 @@ mkdir -p "$worktree_dir"
 created_count=0
 skipped_count=0
 context_root_real="$(resolve_physical_path "$context_root")"
+parallel_jobs="$(default_parallel_jobs)"
+repo_paths_to_process=()
+repo_names_to_process=()
+repo_destinations_to_process=()
 
 for repo_path in "$repos_root"/*/; do
   [ -d "$repo_path" ] || continue
@@ -309,39 +398,62 @@ for repo_path in "$repos_root"/*/; do
     continue
   fi
 
-  branch_name="${branch_prefix}/${seq_num}-${initiative_name}"
-  if git -C "$repo_path" show-ref --verify --quiet "refs/heads/${branch_name}"; then
-    log_command "git -C ${repo_path} worktree add ${wt_dest} ${branch_name}"
-    if git -C "$repo_path" worktree add "$wt_dest" "$branch_name" 2>/dev/null; then
-      log_success "Created worktree: ${repo_name} -> ${wt_dest} (branch: ${branch_name})"
-      created_count=$((created_count + 1))
-    else
-      log_warning "Failed to reattach existing branch for ${repo_name}"
-      skipped_count=$((skipped_count + 1))
-    fi
+  repo_paths_to_process+=("$repo_path")
+  repo_names_to_process+=("$repo_name")
+  repo_destinations_to_process+=("$wt_dest")
+done
+
+if [ "${#repo_paths_to_process[@]}" -gt 0 ]; then
+  log_info "Processing ${#repo_paths_to_process[@]} repos with up to ${parallel_jobs} parallel jobs"
+fi
+
+tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/af-implement.XXXXXX")"
+trap 'rm -rf "$tmp_dir"' EXIT
+
+pids=()
+log_files=()
+status_files=()
+branch_name="${branch_prefix}/${seq_num}-${initiative_name}"
+
+for i in "${!repo_paths_to_process[@]}"; do
+  wait_for_available_slot "$parallel_jobs"
+
+  log_file="${tmp_dir}/${i}.log"
+  status_file="${tmp_dir}/${i}.status"
+
+  process_repo_worktree \
+    "${repo_paths_to_process[$i]}" \
+    "${repo_names_to_process[$i]}" \
+    "${repo_destinations_to_process[$i]}" \
+    "$branch_name" \
+    "$log_file" \
+    "$status_file" &
+
+  pids+=("$!")
+  log_files+=("$log_file")
+  status_files+=("$status_file")
+done
+
+for pid in "${pids[@]}"; do
+  wait "$pid" || true
+done
+
+for i in "${!repo_paths_to_process[@]}"; do
+  if [ -f "${log_files[$i]}" ]; then
+    cat "${log_files[$i]}"
+  fi
+
+  if [ -f "${status_files[$i]}" ]; then
+    result="$(cat "${status_files[$i]}")"
   else
-    # Fetch before creating a new branch from the remote default branch.
-    log_command "git -C ${repo_path} fetch"
-    if ! git -C "$repo_path" fetch --quiet 2>/dev/null; then
-      log_warning "Fetch failed for ${repo_name}, skipping"
-      skipped_count=$((skipped_count + 1))
-      continue
-    fi
+    result="skipped"
+    log_warning "No result recorded for ${repo_names_to_process[$i]}, skipping"
+  fi
 
-    if ! default_branch="$(detect_default_branch "$repo_path")"; then
-      log_warning "Cannot detect default branch for ${repo_name}, skipping"
-      skipped_count=$((skipped_count + 1))
-      continue
-    fi
-
-    log_command "git -C ${repo_path} worktree add ${wt_dest} -b ${branch_name} origin/${default_branch}"
-    if git -C "$repo_path" worktree add "$wt_dest" -b "$branch_name" "origin/${default_branch}" 2>/dev/null; then
-      log_success "Created worktree: ${repo_name} -> ${wt_dest} (branch: ${branch_name})"
-      created_count=$((created_count + 1))
-    else
-      log_warning "Failed to create worktree for ${repo_name}"
-      skipped_count=$((skipped_count + 1))
-    fi
+  if [ "$result" = "created" ]; then
+    created_count=$((created_count + 1))
+  elif [ "$result" = "skipped" ]; then
+    skipped_count=$((skipped_count + 1))
   fi
 done
 

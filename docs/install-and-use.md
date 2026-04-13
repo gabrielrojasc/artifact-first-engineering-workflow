@@ -240,8 +240,9 @@ The script:
 
 1. Scans `active/` and `archive/` for the next sequence number.
 2. Creates the initiative folder with `research/`, `plans/`, `status/`, and `decisions/` subdirectories.
-3. Fetches every repo under the repos root except the configured context repo.
-4. Creates a worktree per repo under `<worktrees-root>/NNNN/<repo>/` with a properly named branch.
+3. Processes each repo under the repos root except the configured context repo.
+4. Fetches and creates worktrees in parallel so large multi-repo setups finish faster.
+5. Creates a worktree per repo under `<worktrees-root>/NNNN/<repo>/` with a properly named branch.
 
 All implementation happens inside the worktrees. Branch naming follows the repo's branch prefix convention (`feature/`, `bugfix/`, `hotfix/`, etc.).
 

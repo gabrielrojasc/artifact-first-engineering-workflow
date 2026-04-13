@@ -33,6 +33,8 @@ Supported exits:
 
 Before editing any code, run the installed `af-implement` helper script to create the initiative folder and worktrees. The script is idempotent: if the initiative folder already exists (e.g., created during planning or research), it reuses the existing folder and sequence number and only creates missing worktrees.
 
+The helper processes repo fetch and worktree creation in parallel, so setup time stays reasonable for larger multi-repo checkouts.
+
 ```bash
 $HOME/.agents/skills/af-implement/scripts/init-initiative.sh \
   --repos-root <REPOS_ROOT> \
