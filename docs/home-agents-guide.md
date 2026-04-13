@@ -119,7 +119,7 @@ The worktree layout should look like:
     <repo-b>/
 ```
 
-The `NNNN` matches the initiative's sequence number in `engineering-context/active/`. The installed `af-implement` helper at `<SKILLS_ROOT>/af-implement/scripts/init-initiative.sh` handles the full setup: assigns the sequence number, creates the initiative folder, fetches all repos, and creates worktrees. The installed `af-archive` helper at `<SKILLS_ROOT>/af-archive/scripts/archive-initiative.sh` handles cleanup: removes worktrees, deletes branches, and moves the initiative to `archive/`.
+The `NNNN` matches the initiative's sequence number in `engineering-context/active/`. The installed context helper at `<SKILLS_ROOT>/af-plan/scripts/init-initiative-context.sh` (or the matching `af-research` wrapper) creates or reuses the shared initiative folder during planning or research. The installed `af-implement` helper at `<SKILLS_ROOT>/af-implement/scripts/init-initiative.sh` then fetches repos and creates worktrees for that existing initiative. The installed `af-archive` helper at `<SKILLS_ROOT>/af-archive/scripts/archive-initiative.sh` handles cleanup: removes worktrees, deletes branches, and moves the initiative to `archive/`.
 
 ## Readability Guidance To Include
 

@@ -31,7 +31,15 @@ Combine modes when one pass reveals gaps. A repo discovery pass that uncovers un
 
 1. Restate the task as a research question.
 2. Identify the relevant repo set, services, contracts, and environments.
-3. Read the smallest stable source-of-truth artifacts first, in this order:
+3. Before writing the first research artifact for a new initiative, create or reuse the shared initiative folder:
+
+```bash
+$HOME/.agents/skills/af-research/scripts/init-initiative-context.sh \
+  --context-root <CONTEXT_ROOT> \
+  <initiative-name> [ticket-key]
+```
+
+4. Read the smallest stable source-of-truth artifacts first, in this order:
    - `AGENTS.md` or `CODEOWNERS` for ownership and navigation
    - `README.md` for repo purpose and setup
    - Manifest files (`package.json`, `go.mod`, `pyproject.toml`, `Cargo.toml`) for dependency versions
@@ -40,11 +48,11 @@ Combine modes when one pass reveals gaps. A repo discovery pass that uncovers un
    - Source code only after the above have established context
    Avoid reading source files broadly before narrowing scope through artifacts.
    If the question remains unanswered after the artifact pass, broaden once to targeted source files and tests. If still unanswered after that single broadening pass, reassess the research question or approach before broadening further.
-4. Detect technology and dependency versions from repo-local manifests, lockfiles, images, and config when framework or library behavior matters.
-5. Trace the behavior across repo and service boundaries.
-6. Confirm external framework or library behavior against official version-matched docs when repo evidence alone is not enough.
-7. Compact the findings into a durable Markdown artifact.
-8. End with a clear readiness call and next step.
+5. Detect technology and dependency versions from repo-local manifests, lockfiles, images, and config when framework or library behavior matters.
+6. Trace the behavior across repo and service boundaries.
+7. Confirm external framework or library behavior against official version-matched docs when repo evidence alone is not enough.
+8. Compact the findings into a durable Markdown artifact.
+9. End with a clear readiness call and next step.
 
 ## Sub-Agent Delegation
 

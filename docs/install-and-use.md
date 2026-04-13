@@ -196,6 +196,14 @@ Place the main research artifact under the shared `engineering-context` initiati
 
 When behavior depends on a framework or library API, detect the version from repo-local manifests, lockfiles, images, or config first. If repo evidence does not fully prove the behavior, cite the matching official docs in the research artifact instead of relying on memory.
 
+Before writing the first research or plan artifact for a new initiative, create or reuse the shared initiative folder:
+
+```bash
+skills/af-research/scripts/init-initiative-context.sh \
+  --context-root <CONTEXT_ROOT> \
+  <initiative-name> [ticket-key]
+```
+
 ### Plan
 
 Use planning to turn a task or research artifact into an actionable implementation path.
@@ -225,7 +233,15 @@ Implement phase by phase from an approved plan artifact.
 
 Do not create branches or edit code directly in the repos root. Use git worktrees so each initiative gets an isolated working copy and the main checkouts stay clean on their default branch.
 
-Run the `af-implement` helper script to set up both the initiative folder and worktrees in one step:
+Initialize or reuse the shared initiative folder during research or planning:
+
+```bash
+skills/af-plan/scripts/init-initiative-context.sh \
+  --context-root <CONTEXT_ROOT> \
+  <initiative-name> [ticket-key]
+```
+
+Then run the `af-implement` helper script to create worktrees for that initiative:
 
 ```bash
 skills/af-implement/scripts/init-initiative.sh \
@@ -238,8 +254,8 @@ skills/af-implement/scripts/init-initiative.sh \
 
 The script:
 
-1. Scans `active/` and `archive/` for the next sequence number.
-2. Creates the initiative folder with `research/`, `plans/`, `status/`, and `decisions/` subdirectories.
+1. Resolves the existing initiative folder and sequence number from the shared context root.
+2. Ensures the implementation `status/` directory exists.
 3. Processes each repo under the repos root except the configured context repo.
 4. Fetches and creates worktrees in parallel so large multi-repo setups finish faster.
 5. Creates a worktree per repo under `<worktrees-root>/NNNN/<repo>/` with a properly named branch.

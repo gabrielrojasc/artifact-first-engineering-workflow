@@ -3,6 +3,11 @@
 set -euo pipefail
 
 script_name="${0##*/}"
+script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+repo_root="$(CDPATH= cd -- "${script_dir}/../../.." && pwd -P)"
+
+# shellcheck source=../../../scripts/lib/initiative-context.sh
+. "${repo_root}/scripts/lib/initiative-context.sh"
 
 # ---------------------------------------------------------------------------
 # Colors
@@ -59,7 +64,7 @@ usage() {
   cat <<EOF
 Usage: ${script_name} [options] <initiative-name> [ticket-key]
 
-Create a numbered initiative folder and git worktrees for all repos.
+Create git worktrees for an existing numbered initiative folder.
 
 Options:
   --repos-root DIR        Code repositories root
@@ -136,9 +141,9 @@ if [ -z "$worktrees_root" ]; then
 fi
 
 # Expand ~ if present
-repos_root="${repos_root/#\~/$HOME}"
-context_root="${context_root/#\~/$HOME}"
-worktrees_root="${worktrees_root/#\~/$HOME}"
+repos_root="$(af_expand_home_path "$repos_root")"
+context_root="$(af_expand_home_path "$context_root")"
+worktrees_root="$(af_expand_home_path "$worktrees_root")"
 
 # Validate directories exist
 for dir_var in repos_root context_root; do
@@ -157,64 +162,18 @@ if [ ! -d "$active_dir" ]; then
   exit 1
 fi
 
-# ---------------------------------------------------------------------------
-# Determine next sequence number
-# ---------------------------------------------------------------------------
+af_resolve_initiative_folder "$active_dir" "$archive_dir" "$initiative_name" "$ticket_key"
 
-next_sequence_number() {
-  local max=0
-  local num
-
-  for dir in "$active_dir" "$archive_dir"; do
-    [ -d "$dir" ] || continue
-    for entry in "$dir"/*/; do
-      [ -d "$entry" ] || continue
-      basename="$(basename "$entry")"
-      # Extract leading digits
-      num="${basename%%_*}"
-      # Validate it is a number
-      if [[ "$num" =~ ^[0-9]+$ ]]; then
-        num=$((10#$num))  # strip leading zeros for arithmetic
-        if [ "$num" -gt "$max" ]; then
-          max="$num"
-        fi
-      fi
-    done
-  done
-
-  printf '%04d' $(( max + 1 ))
-}
-
-# Check if an active folder already matches this initiative name
-existing_folder=""
-for entry in "$active_dir"/*/; do
-  [ -d "$entry" ] || continue
-  entry_base="$(basename "$entry")"
-  # Strip the leading NNNN_ prefix to compare the initiative part
-  entry_suffix="${entry_base#*_}"
-  if [ -n "$ticket_key" ]; then
-    target_suffix="${initiative_name}_${ticket_key}"
-  else
-    target_suffix="${initiative_name}"
-  fi
-  if [ "$entry_suffix" = "$target_suffix" ]; then
-    existing_folder="$entry_base"
-    break
-  fi
-done
-
-if [ -n "$existing_folder" ]; then
-  folder_name="$existing_folder"
-  seq_num="${folder_name%%_*}"
-  log_info "Reusing existing initiative folder: ${folder_name}"
-else
-  seq_num="$(next_sequence_number)"
-  if [ -n "$ticket_key" ]; then
-    folder_name="${seq_num}_${initiative_name}_${ticket_key}"
-  else
-    folder_name="${seq_num}_${initiative_name}"
-  fi
+if [ "$AF_REUSED" -ne 1 ]; then
+  log_error "Initiative context does not exist for ${initiative_name}${ticket_key:+ ${ticket_key}}."
+  log_error "Run the planning or research context helper first:"
+  log_error "  af-plan/scripts/init-initiative-context.sh --context-root ${context_root} ${initiative_name}${ticket_key:+ ${ticket_key}}"
+  exit 1
 fi
+
+folder_name="$AF_FOLDER_NAME"
+seq_num="$AF_SEQ_NUM"
+log_info "Reusing existing initiative folder: ${folder_name}"
 
 initiative_dir="${active_dir}/${folder_name}"
 worktree_dir="${worktrees_root}/${seq_num}"
@@ -223,18 +182,15 @@ log_info "Initiative: ${folder_name}"
 log_info "Sequence number: ${seq_num}"
 
 # ---------------------------------------------------------------------------
-# Create initiative folder structure
+# Ensure implementation-owned status directory exists
 # ---------------------------------------------------------------------------
 
-log_info "Creating initiative folder structure"
-
-for subdir in research plans status decisions; do
-  target="${initiative_dir}/${subdir}"
-  log_command "mkdir -p ${target}"
-  mkdir -p "$target"
-done
-
-log_success "Created ${initiative_dir}"
+status_dir="${initiative_dir}/status"
+if [ ! -d "$status_dir" ]; then
+  log_info "Creating missing status directory"
+  log_command "mkdir -p ${status_dir}"
+  mkdir -p "$status_dir"
+fi
 
 # ---------------------------------------------------------------------------
 # Detect default branch for a repo

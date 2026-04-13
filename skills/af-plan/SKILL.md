@@ -20,9 +20,17 @@ Planning should not paper over unclear ownership or weak evidence.
 2. If no prior research artifact exists and ownership, boundaries, or contracts are unclear, delegate inline research (see below).
 3. Verify the repo set, ownership, contracts, and rollout constraints.
 4. Carry forward any version-grounded framework or library references needed for implementation, or gather them directly for PI work when research does not exist.
-5. Run Interactive Alignment (see below).
-6. Decide whether the work is PI or RPI. Produce the smallest plan shape that fits the risk.
-7. Separate automated verification from manual verification.
+5. Before writing the first plan artifact for a new initiative, create or reuse the shared initiative folder:
+
+```bash
+$HOME/.agents/skills/af-plan/scripts/init-initiative-context.sh \
+  --context-root <CONTEXT_ROOT> \
+  <initiative-name> [ticket-key]
+```
+
+6. Run Interactive Alignment (see below).
+7. Decide whether the work is PI or RPI. Produce the smallest plan shape that fits the risk.
+8. Separate automated verification from manual verification.
 
 ## Interactive Alignment
 

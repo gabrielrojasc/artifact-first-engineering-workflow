@@ -66,7 +66,13 @@ Human-facing artifacts -- plans, research, decision records -- must optimize for
 
 Do not create branches or edit code directly in `<REPOS_ROOT>`. Use git worktrees so each initiative gets an isolated working copy and the main checkouts stay clean.
 
-Setup: run the installed `af-implement` helper script. It assigns the next sequence number, creates the initiative folder structure, fetches all repos, and creates worktrees under `<WORKTREES_ROOT>/NNNN/<repo>/`.
+Setup: initialize or reuse the initiative folder during planning or research, then run the installed `af-implement` helper script to create worktrees under `<WORKTREES_ROOT>/NNNN/<repo>/`.
+
+```bash
+<SKILLS_ROOT>/af-plan/scripts/init-initiative-context.sh \
+  --context-root <CONTEXT_ROOT> \
+  <initiative-name> [ticket-key]
+```
 
 ```bash
 <SKILLS_ROOT>/af-implement/scripts/init-initiative.sh \

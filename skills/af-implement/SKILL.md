@@ -31,7 +31,7 @@ Supported exits:
 
 ### Implementation Workspace Setup
 
-Before editing any code, run the installed `af-implement` helper script to create the initiative folder and worktrees. The script is idempotent: if the initiative folder already exists (e.g., created during planning or research), it reuses the existing folder and sequence number and only creates missing worktrees.
+Before editing any code, initialize the shared initiative folder during planning or research. Then run the installed `af-implement` helper script to create worktrees for that existing initiative. The script is idempotent: it reuses the existing initiative folder and sequence number and only creates missing worktrees.
 
 The helper processes repo fetch and worktree creation in parallel, so setup time stays reasonable for larger multi-repo checkouts.
 
@@ -45,6 +45,14 @@ $HOME/.agents/skills/af-implement/scripts/init-initiative.sh \
 ```
 
 If worktrees for this initiative already exist (e.g., resuming from a handoff), verify they are up to date with the remote default branch and skip creation.
+
+If the initiative folder does not exist yet, create it first with the planning or research context helper:
+
+```bash
+$HOME/.agents/skills/af-plan/scripts/init-initiative-context.sh \
+  --context-root <CONTEXT_ROOT> \
+  <initiative-name> [ticket-key]
+```
 
 All implementation happens inside `<worktrees-root>/NNNN/<repo>/`, not in the repos root.
 
