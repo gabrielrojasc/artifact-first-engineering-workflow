@@ -36,12 +36,13 @@ Before touching the plan artifact, summarize the agreed changes in a compact lis
 - What sections change and how.
 - What stays the same.
 - Whether any completed phases need re-verification.
+- Whether existing diagrams need updating to reflect the changes.
 
 Get explicit confirmation to proceed.
 
 ### 4. Apply and record
 
-Edit only the agreed sections of the plan. Preserve everything else. Add a revision history entry.
+Edit only the agreed sections of the plan. Preserve everything else. Update any Mermaid diagrams (sequence, flow, dependency) that are affected by the changes so they stay consistent with the revised text. Add a revision history entry.
 
 ## Scope Assessment
 
@@ -61,7 +62,8 @@ If the conversation reveals that most phases need rewriting, recommend a full re
 - Preserve the plan's existing design decisions unless the conversation explicitly overrides them.
 - When adding or modifying phases, maintain the same structure (automated verification, manual verification, file lists) as existing phases.
 - Record every iteration with a short note: what changed, why, and which phases were affected.
-- Keep the plan internally consistent after iteration -- cross-references, phase numbering, and exit criteria must still hold.
+- Keep the plan internally consistent after iteration -- cross-references, phase numbering, exit criteria, and diagrams must still hold.
+- When a change affects flow, sequencing, ownership, or component boundaries, update every Mermaid diagram in the artifact to match. A stale diagram is treated as an incomplete iteration.
 
 ## Output
 
