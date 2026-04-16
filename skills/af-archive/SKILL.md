@@ -18,13 +18,13 @@ $HOME/.agents/skills/af-archive/scripts/archive-initiative.sh \
   --repos-root <REPOS_ROOT> \
   --context-root <CONTEXT_ROOT> \
   --worktrees-root <WORKTREES_ROOT> \
-  [--delete-remote] [--yes] <NNNN or folder-name>
+  [--jobs <N>] [--delete-remote] [--yes] <NNNN or folder-name>
 ```
 
 The script handles the full lifecycle:
 
 1. Resolves the initiative by sequence number or folder name.
-2. Scans worktrees for uncommitted changes, unpushed commits, and open PRs.
+2. Scans worktrees for uncommitted changes, unpushed commits, and open PRs. The scan runs in parallel with an auto-selected worker count capped at 8, or a user-provided `--jobs <N>` override.
 3. Presents an archive plan and prompts for confirmation (unless `--yes` is passed).
 4. Removes each worktree via `git worktree remove`.
 5. Deletes local branches with `git branch -d` (safe delete; warns on unmerged).

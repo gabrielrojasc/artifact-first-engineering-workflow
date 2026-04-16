@@ -69,6 +69,7 @@ Options:
   --repos-root DIR        Code repositories root
   --context-root DIR      Engineering context root
   --worktrees-root DIR    Worktrees root
+  --jobs N                Max parallel scan jobs (default: auto, capped at 8)
   --delete-remote         Also delete remote branches
   --yes                   Skip confirmation prompt
   -h, --help              Show this help
@@ -76,7 +77,7 @@ Options:
 Examples:
   ${script_name} --repos-root ~/git --context-root ~/git/engineering-context --worktrees-root ~/worktrees 0001
   ${script_name} --repos-root ~/git --context-root ~/git/engineering-context --worktrees-root ~/worktrees --delete-remote 0001_header-rollout_GATE-123
-  ${script_name} --repos-root ~/git --context-root ~/git/engineering-context --worktrees-root ~/worktrees --yes 0003
+  ${script_name} --repos-root ~/git --context-root ~/git/engineering-context --worktrees-root ~/worktrees --jobs 8 --yes 0003
 EOF
   exit "${1:-0}"
 }
@@ -88,6 +89,7 @@ EOF
 repos_root=""
 context_root=""
 worktrees_root=""
+parallel_jobs=""
 delete_remote=false
 skip_confirm=false
 initiative_id=""
@@ -100,6 +102,8 @@ while [ $# -gt 0 ]; do
       context_root="$2"; shift 2 ;;
     --worktrees-root)
       worktrees_root="$2"; shift 2 ;;
+    --jobs)
+      parallel_jobs="$2"; shift 2 ;;
     --delete-remote)
       delete_remote=true; shift ;;
     --yes)
@@ -138,6 +142,13 @@ fi
 if [ -z "$worktrees_root" ]; then
   log_error "Pass --worktrees-root."
   exit 1
+fi
+
+if [ -n "$parallel_jobs" ]; then
+  if ! [[ "$parallel_jobs" =~ ^[0-9]+$ ]] || [ "$parallel_jobs" -lt 1 ]; then
+    log_error "--jobs must be a positive integer."
+    exit 1
+  fi
 fi
 
 # Expand ~ if present
@@ -200,6 +211,101 @@ detect_default_branch() {
   return 1
 }
 
+default_parallel_jobs() {
+  local cpu_count=""
+
+  if command -v getconf >/dev/null 2>&1; then
+    cpu_count="$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)"
+  fi
+
+  if [ -z "$cpu_count" ] && command -v nproc >/dev/null 2>&1; then
+    cpu_count="$(nproc 2>/dev/null || true)"
+  fi
+
+  if [ -z "$cpu_count" ] && command -v sysctl >/dev/null 2>&1; then
+    cpu_count="$(sysctl -n hw.logicalcpu 2>/dev/null || true)"
+  fi
+
+  if ! [[ "$cpu_count" =~ ^[0-9]+$ ]] || [ "$cpu_count" -lt 1 ]; then
+    cpu_count=4
+  fi
+
+  if [ "$cpu_count" -gt 8 ]; then
+    cpu_count=8
+  fi
+
+  printf '%s' "$cpu_count"
+}
+
+running_job_count() {
+  jobs -pr | wc -l | tr -d ' '
+}
+
+wait_for_available_slot() {
+  local max_jobs="$1"
+
+  while [ "$(running_job_count)" -ge "$max_jobs" ]; do
+    sleep 0.1
+  done
+}
+
+scan_worktree() {
+  local wt_path="$1"
+  local repo_name="$2"
+  local result_file="$3"
+  local branch=""
+  local dirty="false"
+  local unpushed_warning=""
+  local pr_warning=""
+  local upstream_ref=""
+  local ahead_count=""
+  local default_branch=""
+  local origin_url=""
+  local pr_count=""
+
+  if ! branch="$(git -C "$wt_path" rev-parse --abbrev-ref HEAD 2>/dev/null)"; then
+    branch=""
+  fi
+
+  if [ -n "$(git -C "$wt_path" status --porcelain 2>/dev/null)" ]; then
+    dirty="true"
+  fi
+
+  if [ -n "$branch" ] && [ "$branch" != "HEAD" ]; then
+    if upstream_ref="$(git -C "$wt_path" rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null)"; then
+      ahead_count="$(git -C "$wt_path" rev-list --count "${upstream_ref}..HEAD" 2>/dev/null || printf '0')"
+      if [ "$ahead_count" -gt 0 ]; then
+        unpushed_warning="has unpushed commits on ${branch} (${ahead_count} commit(s) ahead of ${upstream_ref})"
+      fi
+    elif default_branch="$(detect_default_branch "$wt_path")"; then
+      ahead_count="$(git -C "$wt_path" rev-list --count "origin/${default_branch}..HEAD" 2>/dev/null || printf '0')"
+      if [ "$ahead_count" -gt 0 ]; then
+        unpushed_warning="branch ${branch} has no remote tracking and is ${ahead_count} commit(s) ahead of origin/${default_branch}"
+      fi
+    else
+      unpushed_warning="branch ${branch} has no remote tracking and the default branch could not be detected"
+    fi
+  fi
+
+  if [ "$gh_available" = true ] && [ -n "$branch" ] && [ "$branch" != "HEAD" ]; then
+    origin_url="$(git -C "$wt_path" remote get-url origin 2>/dev/null || true)"
+    if [ -n "$origin_url" ]; then
+      pr_count="$(gh pr list --head "$branch" --state open --json number --jq 'length' -R "$origin_url" 2>/dev/null || printf '0')"
+      if [ "$pr_count" != "0" ] && [ -n "$pr_count" ]; then
+        pr_warning="has ${pr_count} open PR(s) from branch ${branch}"
+      fi
+    fi
+  fi
+
+  {
+    printf 'repo_name\t%s\n' "$repo_name"
+    printf 'branch\t%s\n' "$branch"
+    printf 'dirty\t%s\n' "$dirty"
+    printf 'unpushed_warning\t%s\n' "$unpushed_warning"
+    printf 'pr_warning\t%s\n' "$pr_warning"
+  } >"$result_file"
+}
+
 folder_name="$(resolve_initiative "$initiative_id")"
 initiative_path="${active_dir}/${folder_name}"
 
@@ -216,56 +322,92 @@ log_info "Worktree directory: ${worktree_dir}"
 # ---------------------------------------------------------------------------
 
 worktree_repos=()
+worktree_paths=()
 worktree_branches=()
 has_issues=false
+gh_available=false
+
+if command -v gh >/dev/null 2>&1; then
+  gh_available=true
+fi
 
 if [ -d "$worktree_dir" ]; then
   for wt_path in "$worktree_dir"/*/; do
     [ -d "$wt_path" ] || continue
     repo_name="$(basename "$wt_path")"
     worktree_repos+=("$repo_name")
+    worktree_paths+=("$wt_path")
+  done
+fi
 
-    # Get branch name
+if [ "${#worktree_paths[@]}" -gt 0 ]; then
+  if [ -z "$parallel_jobs" ]; then
+    parallel_jobs="$(default_parallel_jobs)"
+  fi
+
+  log_info "Scanning ${#worktree_paths[@]} worktree(s) with up to ${parallel_jobs} parallel jobs"
+
+  tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/af-archive.XXXXXX")"
+  trap 'rm -rf "${tmp_dir:-}"' EXIT
+
+  pids=()
+  scan_result_files=()
+
+  for i in "${!worktree_paths[@]}"; do
+    wait_for_available_slot "$parallel_jobs"
+
+    result_file="${tmp_dir}/${i}.scan"
+    scan_worktree "${worktree_paths[$i]}" "${worktree_repos[$i]}" "$result_file" &
+    pids+=("$!")
+    scan_result_files+=("$result_file")
+  done
+
+  for pid in "${pids[@]}"; do
+    wait "$pid" || true
+  done
+
+  for i in "${!worktree_repos[@]}"; do
+    repo_name="${worktree_repos[$i]}"
     branch=""
-    if git -C "$wt_path" rev-parse --abbrev-ref HEAD >/dev/null 2>&1; then
-      branch="$(git -C "$wt_path" rev-parse --abbrev-ref HEAD)"
+    dirty="false"
+    unpushed_warning=""
+    pr_warning=""
+
+    if [ ! -f "${scan_result_files[$i]}" ]; then
+      log_warning "${repo_name}: scan did not complete"
+      has_issues=true
+      worktree_branches+=("")
+      continue
     fi
+
+    while IFS=$'\t' read -r key value; do
+      case "$key" in
+        branch)
+          branch="$value" ;;
+        dirty)
+          dirty="$value" ;;
+        unpushed_warning)
+          unpushed_warning="$value" ;;
+        pr_warning)
+          pr_warning="$value" ;;
+      esac
+    done <"${scan_result_files[$i]}"
+
     worktree_branches+=("$branch")
 
-    # Check for uncommitted changes
-    if [ -n "$(git -C "$wt_path" status --porcelain 2>/dev/null)" ]; then
+    if [ "$dirty" = "true" ]; then
       log_warning "${repo_name}: has uncommitted changes"
       has_issues=true
     fi
 
-    # Check for unpushed commits
-    if [ -n "$branch" ] && git -C "$wt_path" rev-parse "origin/${branch}" >/dev/null 2>&1; then
-      unpushed="$(git -C "$wt_path" log "origin/${branch}..HEAD" --oneline 2>/dev/null)"
-      if [ -n "$unpushed" ]; then
-        log_warning "${repo_name}: has unpushed commits on ${branch}"
-        has_issues=true
-      fi
-    elif [ -n "$branch" ]; then
-      # Branch has no remote tracking. Only warn if it is ahead of the repo default branch.
-      if default_branch="$(detect_default_branch "$wt_path")"; then
-        ahead_count="$(git -C "$wt_path" rev-list --count "origin/${default_branch}..HEAD" 2>/dev/null || printf '0')"
-        if [ "$ahead_count" -gt 0 ]; then
-          log_warning "${repo_name}: branch ${branch} has no remote tracking and is ${ahead_count} commit(s) ahead of origin/${default_branch}"
-          has_issues=true
-        fi
-      else
-        log_warning "${repo_name}: branch ${branch} has no remote tracking and the default branch could not be detected"
-        has_issues=true
-      fi
+    if [ -n "$unpushed_warning" ]; then
+      log_warning "${repo_name}: ${unpushed_warning}"
+      has_issues=true
     fi
 
-    # Check for open PRs if gh is available
-    if command -v gh >/dev/null 2>&1 && [ -n "$branch" ]; then
-      pr_count="$(gh pr list --head "$branch" --state open --json number --jq 'length' -R "$(git -C "$wt_path" remote get-url origin 2>/dev/null)" 2>/dev/null || printf '0')"
-      if [ "$pr_count" != "0" ] && [ "$pr_count" != "" ]; then
-        log_warning "${repo_name}: has ${pr_count} open PR(s) from branch ${branch}"
-        has_issues=true
-      fi
+    if [ -n "$pr_warning" ]; then
+      log_warning "${repo_name}: ${pr_warning}"
+      has_issues=true
     fi
   done
 fi
