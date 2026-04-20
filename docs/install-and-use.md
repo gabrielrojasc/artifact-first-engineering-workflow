@@ -55,6 +55,7 @@ Each skill contains:
 
 - `SKILL.md` as the canonical workflow definition
 - local `references/` files so the skill can travel independently
+- local `scripts/` (when the skill ships helpers), with any shared helper library vendored under `scripts/lib/` so the skill has no external dependencies on this repo
 
 The installer links each of these skill folders individually into `~/.agents/skills/` so unrelated skills in that directory are left alone.
 

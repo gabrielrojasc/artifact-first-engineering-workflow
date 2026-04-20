@@ -4,10 +4,9 @@ set -euo pipefail
 
 script_name="${0##*/}"
 script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
-repo_root="$(CDPATH= cd -- "${script_dir}/../../.." && pwd -P)"
 
-# shellcheck source=../../../scripts/lib/initiative-context.sh
-. "${repo_root}/scripts/lib/initiative-context.sh"
+# shellcheck source=./lib/initiative-context.sh
+. "${script_dir}/lib/initiative-context.sh"
 
 # ---------------------------------------------------------------------------
 # Colors
