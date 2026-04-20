@@ -33,6 +33,7 @@ The influence shows up in artifact-first working habits, planning discipline, co
 ## Start Here
 
 - Clone this repo, then run `scripts/install.sh` to install the starter home files and live skill symlinks.
+- Run `scripts/render-home-agents-snippet.sh` to print the ready-to-merge `$HOME/AGENTS.md` snippet with the default workstation paths filled in.
 - [$HOME/AGENTS.md guidance](docs/home-agents-guide.md)
 - [Install and use manual](docs/install-and-use.md)
 - [Workflow examples](docs/workflow-examples.md)

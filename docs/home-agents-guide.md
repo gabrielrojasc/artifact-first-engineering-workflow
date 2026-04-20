@@ -139,3 +139,5 @@ This section belongs in the home agent guidance because readability is a cross-c
 ## Installed Snippet Source
 
 Use [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) as the single source of truth for the installed home guidance. After installation, replace every placeholder in `~/.codex/AGENTS.md` with real workstation paths and conventions.
+
+For the default layout used by this repo, run `scripts/render-home-agents-snippet.sh` from the repo root. It prints the snippet with `~/git`, `~/git/engineering-context`, `~/worktrees`, `~/tmp/_ai_scratch`, and `~/.agents/skills` already filled in.

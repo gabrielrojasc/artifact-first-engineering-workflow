@@ -13,7 +13,7 @@ Here, `artifact-first` means the durable file is the source of truth. Active pla
 scripts/install.sh
 ```
 
-3. Read [`docs/home-agents-guide.md`](home-agents-guide.md) and replace every placeholder in the installed `~/.codex/AGENTS.md` with your real workstation paths and conventions.
+3. Read [`docs/home-agents-guide.md`](home-agents-guide.md) and replace every placeholder in the installed `~/.codex/AGENTS.md` with your real workstation paths and conventions. For the default layout, run `scripts/render-home-agents-snippet.sh` and merge its output into your home `AGENTS.md`.
 4. If the installer reports existing files or skill destinations, review the relevant docs and merge the rules manually instead of overwriting those paths.
 
 ## What The Installer Does
@@ -37,6 +37,20 @@ It will not:
 When those paths already exist, the installer prints a warning and tells you which doc to review so you can merge the workflow rules yourself.
 
 The installed `~/.codex/AGENTS.md` is a starter file, not a finished workstation config. It still contains placeholders such as `<REPOS_ROOT>`, `<CONTEXT_ROOT>`, `<WORKTREES_ROOT>`, `<SCRATCH_ROOT>`, and `<SKILLS_ROOT>`. Replace them explicitly after installation.
+
+For the default workstation layout, run:
+
+```bash
+scripts/render-home-agents-snippet.sh
+```
+
+The script prints the snippet from [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) with these defaults:
+
+- `~/git` for code repositories
+- `~/git/engineering-context` for shared engineering context
+- `~/worktrees` for implementation worktrees
+- `~/tmp/_ai_scratch` for ephemeral scratch work
+- `~/.agents/skills` for installed workflow skills
 
 When `~/.claude/CLAUDE.md` is created by the installer, it is intentionally a symlink to `~/.codex/AGENTS.md` so both tools read the same guidance file.
 
