@@ -36,6 +36,8 @@ $HOME/.agents/skills/af-plan/scripts/init-initiative-context.sh \
 
 Three mandatory steps before writing the final plan.
 
+Use the harness's native user-input or approval tool for bounded questions and approval gates when one is available. Fall back to concise chat prompts when the harness has no suitable built-in affordance.
+
 **Questioning**: Present your informed understanding of the task and surface design decisions as explicit options (Q1: A or B? Q2: X or Y?). Do not proceed until the human selects directions.
 
 **Design Discussion**: Present current state, desired end state, discovered patterns, and design options with pros/cons in-chat. The human picks the direction. Resolved decisions get recorded in the proposal and then in the final plan.
