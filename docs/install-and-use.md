@@ -1,6 +1,6 @@
 # Install And Use
 
-This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills for research, planning, implementation, plan iteration, and session handoff. Planning follows a QRSPI-style path: Questions, Research when needed, Design, Structure, and Plan before implementation. `PI` (`Plan -> Implement`) and `RPI` (`Research -> Plan -> Implement`) remain useful shorthand for the two common execution paths.
+This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills for research, planning, implementation, plan iteration, session handoff, and PR review-comment triage. Planning follows a QRSPI-style path: Questions, Research when needed, Design, Structure, and Plan before implementation. `PI` (`Plan -> Implement`) and `RPI` (`Research -> Plan -> Implement`) remain useful shorthand for the two common execution paths.
 
 Here, `artifact-first` means the durable file is the source of truth. Active plans, research notes, status artifacts, and decisions should exist as versioned artifacts that agents and humans can reuse; repo-local docs should preserve the durable knowledge worth carrying forward. Chat should support those artifacts, not replace them.
 
@@ -64,12 +64,16 @@ The canonical workflow definitions live in these folders:
 - [`skills/af-iterate/`](../skills/af-iterate/)
 - [`skills/af-handoff/`](../skills/af-handoff/)
 - [`skills/af-archive/`](../skills/af-archive/)
+- [`skills/gh-review-comments/`](../skills/gh-review-comments/)
 
 Each skill contains:
 
 - `SKILL.md` as the canonical workflow definition
+
+Some skills also contain:
+
 - local `references/` files so the skill can travel independently
-- local `scripts/` (when the skill ships helpers), with any shared helper library vendored under `scripts/lib/` so the skill has no external dependencies on this repo
+- local `scripts/` helpers, with any shared helper library vendored under `scripts/lib/` so the skill has no external dependencies on this repo
 
 The installer links each of these skill folders individually into `~/.agents/skills/` so unrelated skills in that directory are left alone.
 

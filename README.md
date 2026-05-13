@@ -50,6 +50,7 @@ The `af` prefix stands for `artifact-first`.
 - [`af-implement`](skills/af-implement/SKILL.md): Execute an approved artifact-first plan phase by phase with explicit exits back to planning or research.
 - [`af-iterate`](skills/af-iterate/SKILL.md): Apply targeted revisions to an existing artifact-first plan when the structure still holds but specific sections need updates.
 - [`af-handoff`](skills/af-handoff/SKILL.md): Transfer working context between agent sessions with compact handoff documents for create and resume flows.
+- [`gh-review-comments`](skills/gh-review-comments/SKILL.md): Fetch PR review comments, assess fix-versus-dismiss decisions, and produce an approval proposal before changing code or replying on GitHub.
 
 ## What This Workflow Optimizes For
 
