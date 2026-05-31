@@ -46,7 +46,7 @@ If the human gives exact, unambiguous edit instructions, apply those instruction
 
 ### 4. Apply and record
 
-Edit only the agreed sections of the plan. Preserve everything else. Update any Mermaid diagrams (sequence, flow, dependency) that are affected by the changes so they stay consistent with the revised text. Add a revision history entry.
+Edit only the agreed sections of the plan. Preserve everything else. Update any Mermaid diagrams (sequence, flow, dependency) that are affected by the changes so they stay consistent with the revised text. Add a revision history entry. Re-render the HTML sibling so the readable view reflects the revised plan (see Output).
 
 ## Scope Assessment
 
@@ -69,6 +69,7 @@ If the conversation reveals that most phases need rewriting, recommend a full re
 - Record every iteration with a short note: what changed, why, and which phases were affected.
 - Keep the plan internally consistent after iteration -- cross-references, phase numbering, success criteria and exit conditions, and diagrams must still hold.
 - When a change affects flow, sequencing, ownership, or component boundaries, update every Mermaid diagram in the artifact to match. A stale diagram is treated as an incomplete iteration.
+- Keep Markdown as the source of truth and regenerate the HTML sibling with `scripts/render-artifact.sh` after each iteration; never hand-edit the generated HTML.
 
 ## Output
 
@@ -81,3 +82,13 @@ Update the existing plan artifact in place. Add a revision entry at the bottom o
 ```
 
 If the plan does not have a revision history section, add one.
+
+### Render an HTML view
+
+Markdown stays the source of truth. The HTML is a generated, human-friendly view: dark-mode first with a light toggle, an auto-generated table of contents, rendered Mermaid diagrams, syntax-highlighted code, and auto-colored status pills. After applying an iteration to the plan, re-render its sibling:
+
+```bash
+$HOME/.agents/skills/af-iterate/scripts/render-artifact.sh <plan.md>
+```
+
+This writes `<plan>.html` next to the Markdown. Re-run it after every iteration. Never hand-edit the generated HTML.

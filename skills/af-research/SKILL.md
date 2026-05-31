@@ -84,6 +84,7 @@ The main agent synthesizes sub-agent findings into the research artifact. Sub-ag
 - When evidence is weak or conflicting, say so and rank the most reliable sources.
 - When an API or framework behavior is in question, record the detected version and the exact docs consulted instead of relying on memory.
 - Keep the output compact enough for a later planning pass to reuse directly.
+- Keep Markdown as the source of truth and regenerate the HTML sibling with `scripts/render-artifact.sh` after each research-artifact edit; never hand-edit the generated HTML.
 - If discovery is not converging after two passes through the same source area, reassess the research mode (e.g., switch from boundary tracing to contract validation) rather than continuing the same approach.
 
 ## Sufficiency Gate
@@ -162,6 +163,16 @@ Every final artifact must end with these exact fields:
 - `Recommended next step`
 
 If ownership, contracts, or rollout boundaries remain unclear, set `Planning readiness: not ready`.
+
+### Render an HTML view
+
+Markdown stays the source of truth. The HTML is a generated, human-friendly view: dark-mode first with a light toggle, an auto-generated table of contents, rendered Mermaid diagrams, syntax-highlighted code, and auto-colored status pills. After writing or updating the research artifact, render its sibling:
+
+```bash
+$HOME/.agents/skills/af-research/scripts/render-artifact.sh <artifact.md>
+```
+
+This writes `<artifact>.html` next to the Markdown. Re-run it after every edit. Never hand-edit the generated HTML.
 
 ## Resources
 

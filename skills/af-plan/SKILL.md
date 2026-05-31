@@ -46,7 +46,7 @@ For low-risk work, Questioning and Design Discussion may be compressed into one 
 
 **Design Discussion**: When run as a separate step, present current state, desired end state, discovered patterns, and design options with pros/cons in-chat. The human picks the direction. Resolved decisions get recorded in the proposal and then in the final plan.
 
-**Structure Approval**: Write the plan proposal to a Markdown artifact before asking for approval. Present that proposal, including the phased breakdown or intended edits, and get explicit approval before writing the final plan. Proposal and final plan artifacts should both include a Mermaid sequence diagram when one clarifies flow, rollout, or responsibility. Skip the diagram only when it would add no meaningful information.
+**Structure Approval**: Write the plan proposal to a Markdown artifact before asking for approval, then render its HTML sibling (see Output) so the human can review a readable version. Present that proposal, including the phased breakdown or intended edits, and get explicit approval before writing the final plan. Proposal and final plan artifacts should both include a Mermaid sequence diagram when one clarifies flow, rollout, or responsibility. Skip the diagram only when it would add no meaningful information.
 
 ## Planning Modes
 
@@ -135,6 +135,16 @@ Keep `workflow-state.md` small and coordination-oriented.
 - Use `references/phased-plan-template.md` for RPI work.
 - Use `references/research-request-template.md` only when inline research still leaves planning-blocking truth gaps.
 
+### Render an HTML view
+
+Markdown stays the source of truth. The HTML is a generated, human-friendly view: dark-mode first with a light toggle, an auto-generated table of contents, rendered Mermaid diagrams, syntax-highlighted code, and auto-colored status pills. After writing or updating a proposal or plan artifact, render its sibling:
+
+```bash
+$HOME/.agents/skills/af-plan/scripts/render-artifact.sh <artifact.md>
+```
+
+This writes `<artifact>.html` next to the Markdown. Re-run it after every edit. Never hand-edit the generated HTML.
+
 ## Rules
 
 - Plans are first-class artifacts.
@@ -143,5 +153,6 @@ Keep `workflow-state.md` small and coordination-oriented.
 - When implementation depends on framework or library behavior, include the detected version and official docs the implementer should rely on.
 - If rollout order matters, say so explicitly.
 - Proposal and final plan artifacts should be Markdown, not chat-only summaries.
+- Keep Markdown as the source of truth and regenerate the HTML sibling with `scripts/render-artifact.sh` after each proposal or plan edit; never hand-edit the generated HTML.
 - Include Mermaid sequence diagrams in the proposal and final plan unless a diagram would be artificial or useless.
 - Follow repo-local durable-docs and shared-context execution layouts instead of inventing ad hoc locations.

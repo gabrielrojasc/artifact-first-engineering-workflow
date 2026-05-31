@@ -156,6 +156,7 @@ If question 1 is no, no doc update is required. If question 1 is yes, implementa
 - Keep changes grouped by phase and repo.
 - Separate automated verification from manual verification every time.
 - Preserve artifact quality so another agent can resume cleanly.
+- Keep Markdown as the source of truth and regenerate the HTML sibling with `scripts/render-artifact.sh` after each status or mismatch update; never hand-edit the generated HTML.
 - Use shared `engineering-context` layouts for active execution artifacts and repo-local docs for durable knowledge consistently.
 - Do not explore alternative approaches during implementation. If the plan does not match reality, use the drift decision gate to route back to planning rather than improvising.
 
@@ -190,3 +191,13 @@ When running **interactively** (human available):
 - Use `references/status-template.md` for phase updates.
 - Use `references/mismatch-template.md` when implementation must route back to planning or research.
 - Close implementation only after recording whether durable knowledge was distilled into repo-local docs.
+
+### Render an HTML view
+
+Markdown stays the source of truth. The HTML is a generated, human-friendly view: dark-mode first with a light toggle, an auto-generated table of contents, rendered Mermaid diagrams, syntax-highlighted code, and auto-colored status pills. After writing or updating a status or mismatch artifact, render its sibling:
+
+```bash
+$HOME/.agents/skills/af-implement/scripts/render-artifact.sh <artifact.md>
+```
+
+This writes `<artifact>.html` next to the Markdown. Re-run it after every status update. Never hand-edit the generated HTML.

@@ -62,3 +62,13 @@ Two modes:
 
 - Use `references/handoff-template.md` for create mode.
 - Resume mode produces an in-chat status assessment, not a separate artifact.
+
+### Render an HTML view
+
+Markdown stays the source of truth. After writing a create-mode handoff document, render its human-friendly HTML sibling (dark-mode first, with a light toggle and an auto table of contents):
+
+```bash
+$HOME/.agents/skills/af-handoff/scripts/render-artifact.sh <handoff.md>
+```
+
+This writes `<handoff>.html` next to the Markdown. Never hand-edit the generated HTML. Resume mode produces no artifact, so nothing to render.

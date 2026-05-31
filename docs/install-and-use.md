@@ -74,6 +74,7 @@ Some skills also contain:
 
 - local `references/` files so the skill can travel independently
 - local `scripts/` helpers, with any shared helper library vendored under `scripts/lib/` so the skill has no external dependencies on this repo
+- a `scripts/render-artifact.sh` helper and `scripts/lib/artifact-template.html` for the artifact-producing skills (`af-research`, `af-plan`, `af-implement`, `af-iterate`, `af-handoff`), vendored byte-identically so each skill renders its HTML view independently
 
 The installer links each of these skill folders individually into `~/.agents/skills/` so unrelated skills in that directory are left alone.
 
@@ -290,6 +291,23 @@ skills/af-archive/scripts/archive-initiative.sh \
   --worktrees-root <WORKTREES_ROOT> \
   [--delete-remote] <NNNN>
 ```
+
+### Rendering A Readable HTML View
+
+Markdown stays the source of truth for every artifact. The HTML render is a generated, human-friendly view -- it is never hand-edited and never replaces the Markdown. The artifact-producing skills (`af-research`, `af-plan`, `af-implement`, `af-iterate`, `af-handoff`) each ship a `render-artifact.sh` helper that produces an `<artifact>.html` sibling next to the Markdown:
+
+```bash
+$HOME/.agents/skills/<skill>/scripts/render-artifact.sh <artifact.md>
+```
+
+The generated view is dark-mode-first with a light toggle and includes:
+
+- an auto-generated table of contents with scroll tracking
+- rendered Mermaid diagrams
+- syntax-highlighted code blocks
+- auto-colored status pills for status-style tables
+
+The render is self-contained: the Markdown is inlined into the HTML and rendered client-side, so the file opens directly in a browser. Re-run the helper after every edit to keep the HTML view current. Never hand-edit the generated HTML.
 
 ## When To Use `workflow-state.md`
 
