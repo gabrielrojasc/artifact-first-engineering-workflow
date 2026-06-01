@@ -38,12 +38,13 @@ Use this skill when the user asks to:
    - **Dismiss with reply**: the comment is incorrect, stale, out of scope, or outweighed by existing constraints.
    - **Already addressed**: the diff or code already handles it; propose a short confirming reply only if useful.
    - Every item must get one of these recommendations. If a comment depends on product, ownership, rollout, or style preference, choose the best recommendation from the evidence and make the assumption explicit in the proposal.
-5. Produce the proposal and wait.
+5. Produce a compact decision pack and ask for approval.
+   - Ask one concise chat approval question after the decision pack.
    - Do not edit code or reply on GitHub until the human approves the proposal or a subset of items.
 
-## Proposal Format
+## Decision Pack Format
 
-Use sectioned item blocks, not a table. Review comments often need multiline evidence, assumptions, and draft replies; tables make those hard to scan.
+Keep the proposal compact enough to make a decision without becoming a wall of text. Prefer numbered blocks over tables. Do not force a rigid template when a shorter recommendation is clearer.
 
 Start with a compact rollup:
 
@@ -51,36 +52,28 @@ Start with a compact rollup:
 - `Dismiss: <count>`
 - `Already addressed: <count>`
 
-Then list each PR and each unresolved item using this shape:
+Then list each unresolved item as a compact numbered block. Every block must include the finding, severity, assessment, and proposed action. Include the thread URL when it is useful for traceability or when proposing a reply.
 
 ```markdown
 ## PR <number>: <title>
 
 Verdict: Fix <count>, dismiss <count>, already addressed <count>.
 
-### <item-number>. <Fix | Dismiss with reply | Already addressed> -- `<path>:<line>`
-
+#: <item-number>
+<reviewer> finding: <path>:<line> - <short concern>
 Thread: <review-thread comment URL>
-Reviewer: <author>
-
-Reviewer concern:
-<one-sentence summary of the comment, not a pasted wall of reviewer text>
-
-Assessment:
-<agent judgment, including any assumptions>
-
-Proposal:
-<concrete fix plan or dismissal rationale>
-
-Evidence:
-- <file, diff, test, or contract evidence>
-- <second evidence point when useful>
-
-Draft thread reply:
-<only for Dismiss with reply or Already addressed>
+Severity: <P0 | P1 | P2 | P3 | Nit>
+Assessment: <short evidence-backed judgment, usually 2-5 sentences>
+Proposed action: <Fix | Dismiss with thread reply | Already addressed>. <concrete plan or reply rationale>
+Draft thread reply: <only for Dismiss with thread reply or Already addressed>
+────────────────────────────────────────
 ```
 
-For **Fix** items, omit `Draft thread reply` unless the user asked for fix-response text too. Keep replies concise and scoped to the reviewed code. Do not mention private chat context as evidence.
+For **Fix** items, omit `Draft thread reply` unless the user asked for fix-response text too. If extra evidence is needed, add one short `Evidence:` line rather than expanding the block into a mini-report. Keep replies concise and scoped to the reviewed code. Do not mention private chat context as evidence.
+
+Separate items with `────────────────────────────────────────` so each recommendation is visually distinct without expanding into a larger template.
+
+After the decision pack, ask one concise approval question in chat. The user can approve all, approve specific item numbers, skip items, or ask for revisions.
 
 ## Approval Rules
 
