@@ -159,6 +159,11 @@ for skill_path in "$skills_source_dir"/*; do
   fi
 
   skill_name="$(basename "$skill_path")"
+  if [ ! -f "${skill_path}/SKILL.md" ]; then
+    log_error "Expected ${skill_path}/SKILL.md for installable skill ${skill_name}."
+    exit 1
+  fi
+
   link_skill "$skill_path" "$skill_name" "${agents_skills_dir}/${skill_name}"
   link_skill "$skill_path" "$skill_name" "${claude_dir}/skills/${skill_name}"
 done

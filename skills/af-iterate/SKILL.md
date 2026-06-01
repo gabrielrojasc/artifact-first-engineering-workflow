@@ -13,9 +13,11 @@ Distinct from re-planning after implementation (`I -> P`): af-iterate handles ca
 
 ## Workflow
 
+Low-risk work means single repo, reversible, no schema/API/event/contract change, no ownership ambiguity, no rollout sequencing, no privacy/security expansion, and no external side effects.
+
 ### 1. Understand the intent
 
-Read the existing plan completely, then listen to the human's change intent. Restate what you understand the intent to be and what parts of the plan it touches. Do not propose edits yet.
+Read the existing plan completely, then listen to the human's change intent. Restate what you understand the intent to be and what parts of the plan it touches. For low-risk work, you may include proposed edits in the same turn. For other work, do not propose edits yet.
 
 ### 2. Talk it through
 
@@ -40,6 +42,8 @@ Before touching the plan artifact, summarize the agreed changes in a compact lis
 
 Get explicit confirmation to proceed.
 
+If the human gives exact, unambiguous edit instructions, apply those instructions without a separate confirmation round.
+
 ### 4. Apply and record
 
 Edit only the agreed sections of the plan. Preserve everything else. Update any Mermaid diagrams (sequence, flow, dependency) that are affected by the changes so they stay consistent with the revised text. Add a revision history entry.
@@ -56,13 +60,14 @@ If the conversation reveals that most phases need rewriting, recommend a full re
 
 ## Rules
 
-- Do not edit the plan until alignment is reached and confirmed.
+- Do not edit the plan until alignment is reached and confirmed, unless the human gave exact, unambiguous edit instructions.
+- For low-risk work, intent restatement and proposed edits may happen in one turn.
 - Do not re-plan from scratch. If the plan needs a full rewrite, route to af-plan.
 - Do not change completed phases unless the feedback specifically invalidates them.
 - Preserve the plan's existing design decisions unless the conversation explicitly overrides them.
 - When adding or modifying phases, maintain the same structure (automated verification, manual verification, file lists) as existing phases.
 - Record every iteration with a short note: what changed, why, and which phases were affected.
-- Keep the plan internally consistent after iteration -- cross-references, phase numbering, exit criteria, and diagrams must still hold.
+- Keep the plan internally consistent after iteration -- cross-references, phase numbering, success criteria and exit conditions, and diagrams must still hold.
 - When a change affects flow, sequencing, ownership, or component boundaries, update every Mermaid diagram in the artifact to match. A stale diagram is treated as an incomplete iteration.
 
 ## Output

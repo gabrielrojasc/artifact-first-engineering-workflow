@@ -36,6 +36,10 @@ sequenceDiagram
     Gateway-->>Client: Response
 ```
 
+## Verification and risk sketch
+
+Required for non-trivial proposals. Use at most 3 concrete bullets. Omit for tiny exact-edit proposals or when it adds no decision value.
+
 ## Open questions for approval
 
 - Question 1

@@ -88,15 +88,18 @@ The main agent synthesizes sub-agent findings into the research artifact. Sub-ag
 
 ## Sufficiency Gate
 
-A research pass is complete when **all** of the following hold:
+A research pass is complete when the research question is answered with sufficient evidence and every boundary checklist item that could affect the answer is marked `verified`, `unknown/non-blocking`, or `not applicable` with rationale.
 
-- Every item in `references/boundary-checklist.md` has either a verified answer or an explicit "unknown -- does not block planning" note.
+Stop research once the research question is answered and remaining relevant unknowns are explicitly non-blocking.
+
+Before declaring research complete:
+
 - The repo set is named and confirmed from direct evidence (manifests, imports, deployments), not from assumption.
 - Ownership for every changed contract or behavior is attributed to a specific repo or service.
 - Technology versions relevant to the task are detected from repo-local artifacts, not assumed.
 - Open questions are listed, and none of them block the planning readiness call.
 
-If any boundary checklist item is both unresolved and planning-relevant, set `Planning readiness: not ready` and list the specific gap.
+If any relevant boundary checklist item is both unresolved and planning-relevant, set `Planning readiness: not ready` and list the specific gap.
 
 ## Artifact Placement
 

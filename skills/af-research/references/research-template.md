@@ -20,6 +20,7 @@ Describe the exact question this research pass answers.
 - Owning repo or service
 - Dependent repos or services
 - Contract or runtime boundary notes
+- Relevant boundary checklist items: verified | unknown/non-blocking | not applicable, with rationale
 
 ## Evidence
 
@@ -36,7 +37,7 @@ Describe the exact question this research pass answers.
 
 ## Unknowns
 
-- Unknown 1
+- Unknown 1, including whether it blocks the research answer or planning readiness
 
 ## Planning readiness
 

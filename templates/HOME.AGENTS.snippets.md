@@ -41,6 +41,10 @@ Replace these placeholders before use:
 
 ## Workflow Rules
 
+- Start by identifying the requested outcome, success criteria, constraints, and evidence needed.
+- Use the smallest workflow and artifact set that safely satisfies the request.
+- Stop research or tool use once the core request can be answered with sufficient evidence.
+- Ask only when missing information materially changes outcome, risk, ownership, or side effects.
 - Plans are first-class artifacts. Compact useful exploration into durable Markdown.
 - The structure-approval proposal is also a first-class Markdown artifact, not just a chat message.
 - Distinguish automated verification from manual verification.

@@ -34,13 +34,17 @@ $HOME/.agents/skills/af-plan/scripts/init-initiative-context.sh \
 
 ## Interactive Alignment
 
-Three mandatory steps before writing the final plan.
+Default alignment has three steps before writing the final plan.
 
 Use the harness's native user-input or approval tool for bounded questions and approval gates when one is available. Fall back to concise chat prompts when the harness has no suitable built-in affordance.
 
-**Questioning**: Present your informed understanding of the task and surface design decisions as explicit options (Q1: A or B? Q2: X or Y?). Do not proceed until the human selects directions.
+Low-risk work means single repo, reversible, no schema/API/event/contract change, no ownership ambiguity, no rollout sequencing, no privacy/security expansion, and no external side effects.
 
-**Design Discussion**: Present current state, desired end state, discovered patterns, and design options with pros/cons in-chat. The human picks the direction. Resolved decisions get recorded in the proposal and then in the final plan.
+For low-risk work, Questioning and Design Discussion may be compressed into one concise pre-proposal summary. This compression applies only to pre-proposal conversation. Structure Approval still requires a Markdown proposal artifact and explicit approval, and the final plan remains a first-class artifact.
+
+**Questioning**: When run as a separate step, present your informed understanding of the task and surface design decisions as explicit options (Q1: A or B? Q2: X or Y?). Do not proceed until the human selects directions.
+
+**Design Discussion**: When run as a separate step, present current state, desired end state, discovered patterns, and design options with pros/cons in-chat. The human picks the direction. Resolved decisions get recorded in the proposal and then in the final plan.
 
 **Structure Approval**: Write the plan proposal to a Markdown artifact before asking for approval. Present that proposal, including the phased breakdown or intended edits, and get explicit approval before writing the final plan. Proposal and final plan artifacts should both include a Mermaid sequence diagram when one clarifies flow, rollout, or responsibility. Skip the diagram only when it would add no meaningful information.
 

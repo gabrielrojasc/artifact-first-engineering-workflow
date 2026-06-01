@@ -26,8 +26,9 @@ Supported exits:
 7. Implement one phase at a time. All edits happen in the worktree copies, not in the repos root.
 8. Run automated verification before advancing.
 9. Record manual verification separately.
-10. Route back to planning or research when reality diverges beyond bounded detail drift.
-11. Before closing implementation, decide whether the work surfaced durable knowledge that belongs in repo-local docs; update those docs when the answer is yes.
+10. Check plan traceability at phase boundaries, mismatch points, and final close-out only.
+11. Route back to planning or research when reality diverges beyond bounded detail drift.
+12. Before closing implementation, decide whether the work surfaced durable knowledge that belongs in repo-local docs; update those docs when the answer is yes.
 
 ### Implementation Workspace Setup
 
@@ -127,6 +128,17 @@ Before each action, check sequentially:
 - If the work is complex, branching, or cross-repo, keep coordination state in `workflow-state.md`.
 - Default status artifacts to `<CONTEXT_ROOT>/active/NNNN_<clear-initiative>[_<ticket-key>]/status/`.
 - Use repo-local `docs/` for durable knowledge distilled from the implementation, not as the default home for execution status.
+
+## Plan Traceability Check
+
+At phase boundaries, mismatch points, and final close-out, confirm whether the plan still holds:
+
+- Requirements still addressed
+- Success criteria still reachable
+- Failure behavior still valid
+- Privacy/security assessment still valid
+
+Do not run this check after every edit. If any answer is no, use the drift decision gate or mismatch template to route the work.
 
 ## Close-Out Distillation Gate
 

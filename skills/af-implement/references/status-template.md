@@ -37,6 +37,15 @@
 - Required: yes | deferred
 - If deferred, reason:
 
+## Plan traceability check
+
+Use at phase boundaries and final close-out only.
+
+- Requirements still addressed: yes | no
+- Success criteria still reachable: yes | no
+- Failure behavior still valid: yes | no
+- Privacy/security assessment still valid: yes | no
+
 ## Durable knowledge distillation
 
 - Durable knowledge surfaced: yes | no

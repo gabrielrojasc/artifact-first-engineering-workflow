@@ -28,6 +28,13 @@ Use this artifact only when implementation must stop and route back to planning 
 
 - Reason 1
 
+## Plan traceability check
+
+- Requirements still addressed: yes | no
+- Success criteria still reachable: yes | no
+- Failure behavior still valid: yes | no
+- Privacy/security assessment still valid: yes | no
+
 ## Recommended next step
 
 - Recommended next step

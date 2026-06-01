@@ -9,6 +9,7 @@
 - The user's chosen worktrees root
 - The user's chosen scratch root
 - A short rule for where active execution artifacts live and where repo-local durable knowledge lives
+- A short outcome, success, and stop-rule reminder for using the smallest sufficient workflow
 - Repo discovery expectations
 - A reminder that plans are first-class artifacts
 - A reminder that scratch is temporary and non-canonical

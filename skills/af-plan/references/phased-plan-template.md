@@ -63,6 +63,16 @@ Repeat this phase block for each phase in the rollout.
 
 - Containment or rollback step
 
-## Exit criteria
+## Traceability and risk
+
+Use 1-3 concrete bullets. Each bullet must map to at least one of:
+
+- a requirement and its phase, file, or verification
+- a failure action: continue with bounded drift | return to planning | return to research | stop and ask
+- a privacy/security impact, or `None identified` with rationale
+
+Delete this section when it adds no traceability or decision value.
+
+## Success criteria and exit conditions
 
 - Criterion 1
