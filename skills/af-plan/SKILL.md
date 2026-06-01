@@ -143,7 +143,7 @@ Markdown stays the source of truth. The HTML is a generated, human-friendly view
 $HOME/.agents/skills/af-plan/scripts/render-artifact.sh <artifact.md>
 ```
 
-This writes `<artifact>.html` next to the Markdown. Re-run it after every edit. Never hand-edit the generated HTML.
+This writes `<artifact>.html` next to the Markdown. Regenerate it whenever you update the Markdown so the rendered view stays in sync. Never hand-edit the generated HTML.
 
 ## Rules
 
@@ -153,6 +153,6 @@ This writes `<artifact>.html` next to the Markdown. Re-run it after every edit. 
 - When implementation depends on framework or library behavior, include the detected version and official docs the implementer should rely on.
 - If rollout order matters, say so explicitly.
 - Proposal and final plan artifacts should be Markdown, not chat-only summaries.
-- Keep Markdown as the source of truth and regenerate the HTML sibling with `scripts/render-artifact.sh` after each proposal or plan edit; never hand-edit the generated HTML.
+- Keep Markdown as the source of truth and regenerate the HTML sibling with `scripts/render-artifact.sh` whenever you update the proposal or plan; never hand-edit the generated HTML.
 - Include Mermaid sequence diagrams in the proposal and final plan unless a diagram would be artificial or useless.
 - Follow repo-local durable-docs and shared-context execution layouts instead of inventing ad hoc locations.

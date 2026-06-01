@@ -69,7 +69,7 @@ If the conversation reveals that most phases need rewriting, recommend a full re
 - Record every iteration with a short note: what changed, why, and which phases were affected.
 - Keep the plan internally consistent after iteration -- cross-references, phase numbering, success criteria and exit conditions, and diagrams must still hold.
 - When a change affects flow, sequencing, ownership, or component boundaries, update every Mermaid diagram in the artifact to match. A stale diagram is treated as an incomplete iteration.
-- Keep Markdown as the source of truth and regenerate the HTML sibling with `scripts/render-artifact.sh` after each iteration; never hand-edit the generated HTML.
+- Keep Markdown as the source of truth and regenerate the HTML sibling with `scripts/render-artifact.sh` whenever you update the plan; never hand-edit the generated HTML.
 
 ## Output
 
@@ -91,4 +91,4 @@ Markdown stays the source of truth. The HTML is a generated, human-friendly view
 $HOME/.agents/skills/af-iterate/scripts/render-artifact.sh <plan.md>
 ```
 
-This writes `<plan>.html` next to the Markdown. Re-run it after every iteration. Never hand-edit the generated HTML.
+This writes `<plan>.html` next to the Markdown. Regenerate it whenever you update the Markdown so the rendered view stays in sync. Never hand-edit the generated HTML.
