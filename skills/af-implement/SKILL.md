@@ -23,7 +23,7 @@ Supported exits:
 4. Confirm repo order, ownership, and dependency expectations.
 5. Reuse the version-grounded references from the plan when framework or library behavior matters.
 6. Before editing code, state in the status artifact: the approach (one sentence) and the most likely failure mode (one sentence).
-7. Implement one phase at a time. All edits happen in the worktree copies, not in the repos root.
+7. Implement one phase at a time. All edits happen in initiative worktrees, not in the persistent default worktree.
 8. Run automated verification before advancing.
 9. Record manual verification separately.
 10. Check plan traceability at phase boundaries, mismatch points, and final close-out only.
@@ -40,10 +40,13 @@ The helper processes repo fetch and worktree creation in parallel, so setup time
 $HOME/.agents/skills/af-implement/scripts/init-initiative.sh \
   --repos-root <REPOS_ROOT> \
   --context-root <CONTEXT_ROOT> \
-  --worktrees-root <WORKTREES_ROOT> \
+  --repo <repo-name> [--repo <repo-name> ...] \
   [--branch-prefix feature] \
-  <initiative-name> [ticket-key]
+  <NNNN or folder-name or initiative-name> [ticket-key]
 ```
+
+Prefer the sequence number (`NNNN`) when the initiative folder already exists.
+Pass only the repos needed for the current work. If a repo was missed, rerun the helper with another `--repo <repo-name>`.
 
 If worktrees for this initiative already exist (e.g., resuming from a handoff), verify they are up to date with the remote default branch and skip creation.
 
@@ -55,7 +58,7 @@ $HOME/.agents/skills/af-plan/scripts/init-initiative-context.sh \
   <initiative-name> [ticket-key]
 ```
 
-All implementation happens inside `<worktrees-root>/NNNN/<repo>/`, not in the repos root.
+All implementation happens inside targeted initiative worktrees at `<repos-root>/<repo>/NNNN-<initiative>/`, not in the persistent default worktree.
 
 ## Mismatch Policy
 

@@ -8,7 +8,7 @@ Planning in this workflow follows a QRSPI-style path: Questions, Research when n
 
 This repo has three parts:
 
-1. Guidance for what to add to `$HOME/AGENTS.md`
+1. Guidance for what to add to `~/.codex/AGENTS.md`
 2. A practical installation and usage manual for the workflow
 3. Skill source folders you can install into agent setups
 
@@ -33,8 +33,8 @@ The influence shows up in artifact-first working habits, planning discipline, co
 ## Start Here
 
 - Clone this repo, then run `scripts/install.sh` to install the starter home files and live skill symlinks.
-- Run `scripts/render-home-agents-snippet.sh` to print the ready-to-merge `$HOME/AGENTS.md` snippet with the default workstation paths filled in.
-- [$HOME/AGENTS.md guidance](docs/home-agents-guide.md)
+- Run `scripts/render-home-agents-snippet.sh` to print the ready-to-merge `~/.codex/AGENTS.md` snippet with the default workstation paths filled in.
+- [`~/.codex/AGENTS.md` guidance](docs/home-agents-guide.md)
 - [Install and use manual](docs/install-and-use.md)
 - [Workflow examples](docs/workflow-examples.md)
 - [Reusable home guidance snippet](templates/HOME.AGENTS.snippets.md)
@@ -46,10 +46,12 @@ Canonical skill sources live in [`skills/`](skills/):
 The `af` prefix stands for `artifact-first`.
 
 - [`af-research`](skills/af-research/SKILL.md): Analyze one or more repositories and produce a compact, evidence-backed research artifact for artifact-first engineering work.
+- [`af-workspace`](skills/af-workspace/SKILL.md): Add, repair, list, and sync bare-container repos so default-branch browsing and initiative worktrees live under each repo container.
 - [`af-plan`](skills/af-plan/SKILL.md): Create mini-plans for `PI` (`Plan -> Implement`) work and phased plans for `RPI` (`Research -> Plan -> Implement`) work using QRSPI-style interactive alignment and inline research when needed.
 - [`af-implement`](skills/af-implement/SKILL.md): Execute an approved artifact-first plan phase by phase with explicit exits back to planning or research.
 - [`af-iterate`](skills/af-iterate/SKILL.md): Apply targeted revisions to an existing artifact-first plan when the structure still holds but specific sections need updates.
 - [`af-handoff`](skills/af-handoff/SKILL.md): Transfer working context between agent sessions with compact handoff documents for create and resume flows.
+- [`af-archive`](skills/af-archive/SKILL.md): Archive completed or abandoned initiatives by removing worktrees, cleaning branches, and moving context from active to archive.
 - [`gh-review-comments`](skills/gh-review-comments/SKILL.md): Fetch PR review comments, assess fix-versus-dismiss decisions, and produce an approval proposal before changing code or replying on GitHub.
 
 ## What This Workflow Optimizes For

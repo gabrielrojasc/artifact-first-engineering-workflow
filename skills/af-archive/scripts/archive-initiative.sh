@@ -68,16 +68,13 @@ The initiative-id can be:
 Options:
   --repos-root DIR        Code repositories root
   --context-root DIR      Engineering context root
-  --worktrees-root DIR    Worktrees root
   --jobs N                Max parallel scan jobs (default: auto, capped at 8)
-  --delete-remote         Also delete remote branches
   --yes                   Skip confirmation prompt
   -h, --help              Show this help
 
 Examples:
-  ${script_name} --repos-root ~/git --context-root ~/git/engineering-context --worktrees-root ~/worktrees 0001
-  ${script_name} --repos-root ~/git --context-root ~/git/engineering-context --worktrees-root ~/worktrees --delete-remote 0001_header-rollout_GATE-123
-  ${script_name} --repos-root ~/git --context-root ~/git/engineering-context --worktrees-root ~/worktrees --jobs 8 --yes 0003
+  ${script_name} --repos-root ~/git --context-root ~/git/engineering-context 0001
+  ${script_name} --repos-root ~/git --context-root ~/git/engineering-context --jobs 8 --yes 0003
 EOF
   exit "${1:-0}"
 }
@@ -88,9 +85,7 @@ EOF
 
 repos_root=""
 context_root=""
-worktrees_root=""
 parallel_jobs=""
-delete_remote=false
 skip_confirm=false
 initiative_id=""
 
@@ -100,12 +95,8 @@ while [ $# -gt 0 ]; do
       repos_root="$2"; shift 2 ;;
     --context-root)
       context_root="$2"; shift 2 ;;
-    --worktrees-root)
-      worktrees_root="$2"; shift 2 ;;
     --jobs)
       parallel_jobs="$2"; shift 2 ;;
-    --delete-remote)
-      delete_remote=true; shift ;;
     --yes)
       skip_confirm=true; shift ;;
     -h|--help)
@@ -139,11 +130,6 @@ if [ -z "$context_root" ]; then
   exit 1
 fi
 
-if [ -z "$worktrees_root" ]; then
-  log_error "Pass --worktrees-root."
-  exit 1
-fi
-
 if [ -n "$parallel_jobs" ]; then
   if ! [[ "$parallel_jobs" =~ ^[0-9]+$ ]] || [ "$parallel_jobs" -lt 1 ]; then
     log_error "--jobs must be a positive integer."
@@ -154,7 +140,23 @@ fi
 # Expand ~ if present
 repos_root="${repos_root/#\~/$HOME}"
 context_root="${context_root/#\~/$HOME}"
-worktrees_root="${worktrees_root/#\~/$HOME}"
+
+for dir_var in repos_root context_root; do
+  dir_val="${!dir_var}"
+  if [ ! -d "$dir_val" ]; then
+    log_error "${dir_var} directory does not exist: ${dir_val}"
+    exit 1
+  fi
+done
+
+repos_root="$(
+  cd "$repos_root" >/dev/null 2>&1 &&
+    pwd -P
+)"
+context_root="$(
+  cd "$context_root" >/dev/null 2>&1 &&
+    pwd -P
+)"
 
 active_dir="${context_root}/active"
 archive_dir="${context_root}/archive"
@@ -211,6 +213,95 @@ detect_default_branch() {
   return 1
 }
 
+physical_path() {
+  local path="$1"
+
+  if [ ! -e "$path" ]; then
+    return 1
+  fi
+
+  (
+    cd "$path" >/dev/null 2>&1 &&
+      pwd -P
+  )
+}
+
+path_is_under() {
+  local child="$1"
+  local parent="$2"
+
+  case "${child}/" in
+    "${parent}/"*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+derive_initiative_slug() {
+  local folder="$1"
+  local seq="$2"
+  local slug="${folder#${seq}_}"
+
+  if [[ "$slug" =~ _[A-Z][A-Z0-9]+-[0-9]+$ ]]; then
+    slug="${slug%_*}"
+  fi
+
+  printf '%s' "${slug//_/-}"
+}
+
+branch_matches_initiative() {
+  local branch="$1"
+
+  case "$branch" in
+    "$expected_worktree_name"|*/"$expected_worktree_name") return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+worktree_matches_container_path() {
+  local repo_path="$1"
+  local wt_path="$2"
+  local repo_real=""
+  local wt_real=""
+  local wt_base=""
+
+  repo_real="$(physical_path "$repo_path")" || return 1
+  wt_real="$(physical_path "$wt_path")" || return 1
+  wt_base="$(basename "$wt_real")"
+
+  path_is_under "$wt_real" "$repo_real" || return 1
+
+  [ "$wt_base" = "$expected_worktree_name" ]
+}
+
+record_matching_worktree() {
+  local repo_path="$1"
+  local repo_name="$2"
+  local wt_path="$3"
+  local branch_ref="$4"
+  local branch=""
+
+  [ -n "$wt_path" ] || return 0
+  [ -n "$branch_ref" ] || return 0
+
+  case "$branch_ref" in
+    refs/heads/*)
+      branch="${branch_ref#refs/heads/}" ;;
+    *)
+      return 0 ;;
+  esac
+
+  if branch_matches_initiative "$branch"; then
+    if ! worktree_matches_container_path "$repo_path" "$wt_path"; then
+      return 0
+    fi
+
+    worktree_repos+=("$repo_name")
+    worktree_paths+=("$wt_path")
+    worktree_repo_paths+=("$repo_path")
+    worktree_branches+=("$branch")
+  fi
+}
+
 default_parallel_jobs() {
   local cpu_count=""
 
@@ -256,12 +347,9 @@ scan_worktree() {
   local branch=""
   local dirty="false"
   local unpushed_warning=""
-  local pr_warning=""
   local upstream_ref=""
   local ahead_count=""
   local default_branch=""
-  local origin_url=""
-  local pr_count=""
 
   if ! branch="$(git -C "$wt_path" rev-parse --abbrev-ref HEAD 2>/dev/null)"; then
     branch=""
@@ -272,7 +360,12 @@ scan_worktree() {
   fi
 
   if [ -n "$branch" ] && [ "$branch" != "HEAD" ]; then
-    if upstream_ref="$(git -C "$wt_path" rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null)"; then
+    if git -C "$wt_path" rev-parse --verify "refs/remotes/origin/${branch}^{commit}" >/dev/null 2>&1; then
+      ahead_count="$(git -C "$wt_path" rev-list --count "origin/${branch}..HEAD" 2>/dev/null || printf '0')"
+      if [ "$ahead_count" -gt 0 ]; then
+        unpushed_warning="has unpushed commits on ${branch} (${ahead_count} commit(s) ahead of origin/${branch})"
+      fi
+    elif upstream_ref="$(git -C "$wt_path" rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null)"; then
       ahead_count="$(git -C "$wt_path" rev-list --count "${upstream_ref}..HEAD" 2>/dev/null || printf '0')"
       if [ "$ahead_count" -gt 0 ]; then
         unpushed_warning="has unpushed commits on ${branch} (${ahead_count} commit(s) ahead of ${upstream_ref})"
@@ -287,22 +380,11 @@ scan_worktree() {
     fi
   fi
 
-  if [ "$gh_available" = true ] && [ -n "$branch" ] && [ "$branch" != "HEAD" ]; then
-    origin_url="$(git -C "$wt_path" remote get-url origin 2>/dev/null || true)"
-    if [ -n "$origin_url" ]; then
-      pr_count="$(gh pr list --head "$branch" --state open --json number --jq 'length' -R "$origin_url" 2>/dev/null || printf '0')"
-      if [ "$pr_count" != "0" ] && [ -n "$pr_count" ]; then
-        pr_warning="has ${pr_count} open PR(s) from branch ${branch}"
-      fi
-    fi
-  fi
-
   {
     printf 'repo_name\t%s\n' "$repo_name"
     printf 'branch\t%s\n' "$branch"
     printf 'dirty\t%s\n' "$dirty"
     printf 'unpushed_warning\t%s\n' "$unpushed_warning"
-    printf 'pr_warning\t%s\n' "$pr_warning"
   } >"$result_file"
 }
 
@@ -311,11 +393,13 @@ initiative_path="${active_dir}/${folder_name}"
 
 # Extract the sequence number from the folder name
 seq_num="${folder_name%%_*}"
-worktree_dir="${worktrees_root}/${seq_num}"
+initiative_slug="$(derive_initiative_slug "$folder_name" "$seq_num")"
+expected_worktree_name="${seq_num}-${initiative_slug}"
 
 log_info "Initiative: ${folder_name}"
 log_info "Initiative path: ${initiative_path}"
-log_info "Worktree directory: ${worktree_dir}"
+log_info "Sequence number: ${seq_num}"
+log_info "Worktree name: ${expected_worktree_name}"
 
 # ---------------------------------------------------------------------------
 # Collect what will be done
@@ -323,22 +407,51 @@ log_info "Worktree directory: ${worktree_dir}"
 
 worktree_repos=()
 worktree_paths=()
+worktree_repo_paths=()
 worktree_branches=()
 has_issues=false
-gh_available=false
 
-if command -v gh >/dev/null 2>&1; then
-  gh_available=true
-fi
+context_root_real="$(physical_path "$context_root" 2>/dev/null || true)"
 
-if [ -d "$worktree_dir" ]; then
-  for wt_path in "$worktree_dir"/*/; do
-    [ -d "$wt_path" ] || continue
-    repo_name="$(basename "$wt_path")"
-    worktree_repos+=("$repo_name")
-    worktree_paths+=("$wt_path")
-  done
-fi
+for repo_path in "$repos_root"/*/; do
+  [ -d "$repo_path" ] || continue
+  repo_name="$(basename "$repo_path")"
+
+  if ! git -C "$repo_path" rev-parse --git-dir >/dev/null 2>&1; then
+    continue
+  fi
+
+  repo_real_path="$(physical_path "$repo_path")"
+  if [ -n "$context_root_real" ] && [ "$repo_real_path" = "$context_root_real" ]; then
+    continue
+  fi
+
+  if ! path_is_under "$repo_real_path" "$repos_root"; then
+    log_warning "Skipping ${repo_name} (resolves outside repos root: ${repo_real_path})"
+    continue
+  fi
+
+  current_wt_path=""
+  current_branch_ref=""
+
+  while IFS= read -r line || [ -n "$line" ]; do
+    if [ -z "$line" ]; then
+      record_matching_worktree "$repo_path" "$repo_name" "$current_wt_path" "$current_branch_ref"
+      current_wt_path=""
+      current_branch_ref=""
+      continue
+    fi
+
+    case "$line" in
+      worktree\ *)
+        current_wt_path="${line#worktree }" ;;
+      branch\ *)
+        current_branch_ref="${line#branch }" ;;
+    esac
+  done < <(git -C "$repo_path" worktree list --porcelain)
+
+  record_matching_worktree "$repo_path" "$repo_name" "$current_wt_path" "$current_branch_ref"
+done
 
 if [ "${#worktree_paths[@]}" -gt 0 ]; then
   if [ -z "$parallel_jobs" ]; then
@@ -371,12 +484,10 @@ if [ "${#worktree_paths[@]}" -gt 0 ]; then
     branch=""
     dirty="false"
     unpushed_warning=""
-    pr_warning=""
 
     if [ ! -f "${scan_result_files[$i]}" ]; then
       log_warning "${repo_name}: scan did not complete"
       has_issues=true
-      worktree_branches+=("")
       continue
     fi
 
@@ -388,12 +499,8 @@ if [ "${#worktree_paths[@]}" -gt 0 ]; then
           dirty="$value" ;;
         unpushed_warning)
           unpushed_warning="$value" ;;
-        pr_warning)
-          pr_warning="$value" ;;
       esac
     done <"${scan_result_files[$i]}"
-
-    worktree_branches+=("$branch")
 
     if [ "$dirty" = "true" ]; then
       log_warning "${repo_name}: has uncommitted changes"
@@ -402,11 +509,6 @@ if [ "${#worktree_paths[@]}" -gt 0 ]; then
 
     if [ -n "$unpushed_warning" ]; then
       log_warning "${repo_name}: ${unpushed_warning}"
-      has_issues=true
-    fi
-
-    if [ -n "$pr_warning" ]; then
-      log_warning "${repo_name}: ${pr_warning}"
       has_issues=true
     fi
   done
@@ -425,18 +527,18 @@ if [ "${#worktree_repos[@]}" -gt 0 ]; then
     printf '  - %s (branch: %s)\n' "${worktree_repos[$i]}" "${worktree_branches[$i]}"
   done
   printf 'Delete local branches: yes (safe delete with -d)\n'
-  if [ "$delete_remote" = true ]; then
-    printf 'Delete remote branches: yes\n'
-  else
-    printf 'Delete remote branches: no (pass --delete-remote to enable)\n'
-  fi
 else
-  printf 'No worktrees found at %s\n' "$worktree_dir"
+  printf 'No matching worktrees found under repos root: %s\n' "$repos_root"
 fi
 
 if [ "$has_issues" = true ]; then
   printf '\n%s%sWARNING%s: Issues detected above. Review before proceeding.\n' \
     "${color_yellow}" "${color_bold}" "${color_reset}"
+  if [ "$skip_confirm" = true ]; then
+    log_error "--yes cannot be used when archive safety issues were detected."
+    log_error "Re-run without --yes after reviewing the warnings."
+    exit 1
+  fi
 fi
 
 if [ "$skip_confirm" != true ]; then
@@ -463,12 +565,12 @@ if [ "${#worktree_repos[@]}" -gt 0 ]; then
   for i in "${!worktree_repos[@]}"; do
     repo_name="${worktree_repos[$i]}"
     branch="${worktree_branches[$i]}"
-    wt_path="${worktree_dir}/${repo_name}"
-    repo_path="${repos_root}/${repo_name}"
+    wt_path="${worktree_paths[$i]}"
+    repo_path="${worktree_repo_paths[$i]}"
     worktree_removed=false
 
     if [ ! -d "$repo_path" ]; then
-      log_error "Cannot clean up ${repo_name}: repo checkout not found at ${repo_path}"
+      log_error "Cannot clean up ${repo_name}: repo container not found at ${repo_path}"
       failed_wt=$((failed_wt + 1))
       cleanup_failed=true
       continue
@@ -481,17 +583,10 @@ if [ "${#worktree_repos[@]}" -gt 0 ]; then
       removed_wt=$((removed_wt + 1))
       worktree_removed=true
     else
-      # Try with --force if the normal remove fails (e.g., dirty worktree after user confirmed)
-      log_warning "Normal worktree remove failed for ${repo_name}, trying with --force"
-      if git -C "$repo_path" worktree remove --force "$wt_path" 2>/dev/null; then
-        log_success "Force-removed worktree: ${repo_name}"
-        removed_wt=$((removed_wt + 1))
-        worktree_removed=true
-      else
-        log_error "Failed to remove worktree: ${repo_name}"
-        failed_wt=$((failed_wt + 1))
-        cleanup_failed=true
-      fi
+      log_error "Failed to remove worktree: ${repo_name}"
+      log_error "Re-run the archive scan; the worktree may have changed after confirmation."
+      failed_wt=$((failed_wt + 1))
+      cleanup_failed=true
     fi
 
     if [ "$worktree_removed" != true ]; then
@@ -510,21 +605,8 @@ if [ "${#worktree_repos[@]}" -gt 0 ]; then
       fi
     fi
 
-    # Delete remote branch if requested
-    if [ "$delete_remote" = true ] && [ -n "$branch" ] && [ "$branch" != "HEAD" ]; then
-      log_command "git -C ${repo_path} push origin --delete ${branch}"
-      if git -C "$repo_path" push origin --delete "$branch" 2>/dev/null; then
-        log_success "Deleted remote branch: ${branch} (${repo_name})"
-      else
-        log_warning "Could not delete remote branch ${branch} in ${repo_name} (may not exist on remote)"
-      fi
-    fi
   done
 
-  # Remove the initiative worktree directory if empty
-  if [ -d "$worktree_dir" ]; then
-    rmdir "$worktree_dir" 2>/dev/null || true
-  fi
 fi
 
 # ---------------------------------------------------------------------------

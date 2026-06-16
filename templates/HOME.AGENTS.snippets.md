@@ -1,6 +1,6 @@
-# `$HOME/AGENTS.md` Snippets
+# `~/.codex/AGENTS.md` Snippets
 
-Use this file as a starting point for user-level guidance. Replace every placeholder with the actual paths and conventions for the workstation before relying on the installed `AGENTS.md`.
+Use this file as a starting point for user-level guidance. Replace workstation placeholders with actual paths before relying on the installed `AGENTS.md`. Rendered snippets intentionally keep metavariables such as `<repo>`, `<repo-url>`, and `<NNNN-or-folder>` for commands and examples.
 
 ## Generic Top-Level Snippet
 
@@ -10,7 +10,6 @@ Replace these placeholders before use:
 |---|---|
 | `<REPOS_ROOT>` | `~/git`, `~/src`, `~/code`, `~/work/repos` |
 | `<CONTEXT_ROOT>` | `~/git/engineering-context`, `~/src/engineering-context` |
-| `<WORKTREES_ROOT>` | `~/worktrees`, `~/tmp/worktrees` |
 | `<SCRATCH_ROOT>` | `~/tmp/_ai_scratch`, `~/scratch/_ai`, `/tmp/ai-scratch` |
 | `<SKILLS_ROOT>` | `~/.agents/skills`, `~/.claude/skills` |
 
@@ -19,11 +18,12 @@ Replace these placeholders before use:
 
 ## Workspace Conventions
 
-- Code repositories live under `<REPOS_ROOT>`.
+- Repo containers live under `<REPOS_ROOT>/<repo>/`.
+- Browsable default-branch code lives under `<REPOS_ROOT>/<repo>/<default-branch>/`.
 - Shared engineering context lives under `<CONTEXT_ROOT>`.
-- Implementation worktrees live under `<WORKTREES_ROOT>`.
-- Artifact First skills/scripts live under `<SKILLS_ROOT>`.
+- Artifact-first skills/scripts live under `<SKILLS_ROOT>`.
 - Ephemeral scratch work lives under `<SCRATCH_ROOT>`; it is temporary and non-canonical.
+- Add or repair repo containers with the `af-workspace` helper before creating initiative worktrees.
 
 ## Repo Discovery
 
@@ -36,10 +36,9 @@ Replace these placeholders before use:
 - Repo docs live under `docs/`; durable supporting knowledge belongs under `docs/references/`.
 - Use `docs/services/` only for multi-component repos.
 - Active execution artifacts belong under `<CONTEXT_ROOT>/active/NNNN_<clear-initiative>[_<ticket-key>]/`.
-- Scan `<CONTEXT_ROOT>/active/` and `<CONTEXT_ROOT>/archive/` for the highest existing `NNNN`, then increment by one.
+- Before creating a new initiative folder, search `<CONTEXT_ROOT>/active/` and `<CONTEXT_ROOT>/archive/` for existing matching work and reuse it when appropriate.
+- For new initiatives, scan `<CONTEXT_ROOT>/active/` and `<CONTEXT_ROOT>/archive/` for the highest existing `NNNN`, then increment by one.
 - Use `research/`, `plans/`, and `status/` under the initiative folder for active execution artifacts.
-- Use `decisions/` for initiative-local tradeoffs that need a durable record.
-- Use `<CONTEXT_ROOT>/service-catalog/` for stable service cards and `<CONTEXT_ROOT>/dependency-maps/` for durable cross-repo maps.
 - Use `workflow-state.md` only for complex, branching, or multi-repo coordination.
 
 ## Workflow Rules
@@ -56,19 +55,18 @@ Replace these placeholders before use:
 ## Artifact Readability
 
 - Optimize human-facing artifacts for scanning and comprehension.
-- Lead sections with the conclusion, then supporting evidence.
-- Use short concrete prose, structured lists, tables for comparisons, and Mermaid diagrams when visual structure helps.
-- Use headings that state findings or decisions.
-- Keep terminology consistent.
+- Lead with conclusions, then supporting evidence.
+- Use short concrete prose, structured lists, tables, and diagrams when they improve comprehension.
 - Agent-to-agent artifacts like handoffs and status updates prioritize machine-parseable completeness.
 
 ## Implementation Workspace
 
-- Do not create branches or edit code directly in `<REPOS_ROOT>`.
-- Use git worktrees under `<WORKTREES_ROOT>/NNNN/<repo>/` so each initiative gets an isolated working copy.
+- Do not create branches or edit code in the persistent default worktree.
+- If you are in the persistent default worktree and need to edit code, stop and create or switch to the initiative worktree first.
+- Use git worktrees under `<REPOS_ROOT>/<repo>/NNNN-<initiative>/` so each initiative gets an isolated working copy.
 - The worktree `NNNN` matches the initiative number under `<CONTEXT_ROOT>/active/`.
-- During planning or research, use `<SKILLS_ROOT>/af-plan/scripts/init-initiative-context.sh` to create or reuse the initiative folder.
-- During implementation, use `<SKILLS_ROOT>/af-implement/scripts/init-initiative.sh` to create worktrees for the existing initiative.
+- During planning or research, use the `af-plan` or `af-research` context helper to create or reuse the initiative folder.
+- During implementation, use `<SKILLS_ROOT>/af-implement/scripts/init-initiative.sh --repos-root <REPOS_ROOT> --context-root <CONTEXT_ROOT> --repo <repo> <NNNN-or-folder>` to create worktrees only for repos needed by the existing initiative; rerun it with another `--repo` if scope expands.
 - Cleanup is destructive. Before running `<SKILLS_ROOT>/af-archive/scripts/archive-initiative.sh`, get explicit user approval and verify no uncommitted or unpushed work would be lost.
 - Branch naming follows the repo's branch prefix convention.
 ```

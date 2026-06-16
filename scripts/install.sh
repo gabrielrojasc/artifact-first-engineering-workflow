@@ -192,10 +192,9 @@ fi
 
 printf '\n%s%sPost-install required%s\n' "${color_bold}" "${color_blue}" "${color_reset}"
 printf 'Replace the placeholders in %s before relying on it.\n' "$codex_agents_file"
-printf 'Expected placeholders include %s, %s, %s, %s, and %s.\n' \
+printf 'Expected placeholders include %s, %s, %s, and %s.\n' \
   '<REPOS_ROOT>' \
   '<CONTEXT_ROOT>' \
-  '<WORKTREES_ROOT>' \
   '<SCRATCH_ROOT>' \
   '<SKILLS_ROOT>'
 printf 'When created by this installer, %s is intentionally a symlink to %s so both tools read the same guidance.\n' \

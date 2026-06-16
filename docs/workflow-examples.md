@@ -11,7 +11,7 @@ Recommended path:
 1. `af-plan` runs a light Questioning, Design Discussion, and Structure Approval pass.
 2. Before writing the first artifact, `af-plan` creates or reuses the shared initiative folder, then writes a mini-plan proposal under `engineering-context/active/0001_http-client-timeout/plans/`, gets approval, and writes the final mini-plan.
 3. The proposal and final plan include a Mermaid sequence diagram when it helps explain the request flow or responsibility handoff. Both artifacts also list the target files, any version-sensitive library docs the implementer should trust, automated checks, and manual verification.
-4. `af-implement` creates worktrees under `<worktrees-root>/0001/` for every repo except the configured context repo, executes the change, and records phase status under `engineering-context/active/0001_http-client-timeout/status/`.
+4. `af-implement` creates an initiative worktree under `<repos-root>/<repo>/0001-http-client-timeout/` for the target service repo, executes the change, and records phase status under `engineering-context/active/0001_http-client-timeout/status/`.
 5. If the change surfaced no durable repo knowledge beyond the implementation itself, no repo-local docs update is required at close-out.
 
 Why the PI path fits:
@@ -34,7 +34,7 @@ Recommended path:
 5. `af-plan` then runs Questioning, Design Discussion, and Structure Approval with the human, writes a phased proposal under `engineering-context/active/0002_header-rollout_GATE-123/plans/`, gets approval, and then writes the phased RPI plan.
 6. The proposal and final plan include a Mermaid sequence diagram when it clarifies the rollout or interaction flow. The final plan separates producer-first and consumer rollout steps and records automated and manual verification.
 7. `workflow-state.md` is added because the work spans multiple repos and rollout coordination matters.
-8. `af-implement` creates worktrees under `<worktrees-root>/0002/` for every repo except the configured context repo, executes one phase at a time, and updates the status artifact under `engineering-context/active/0002_header-rollout_GATE-123/status/`.
+8. `af-implement` creates initiative worktrees under `<repos-root>/<repo>/0002-header-rollout/` for the producer and consumer repos named by the plan, executes one phase at a time, and updates the status artifact under `engineering-context/active/0002_header-rollout_GATE-123/status/`.
 9. Close-out distills any lasting gateway or service rollout knowledge into the relevant repo docs before the work is considered complete.
 
 The important naming rule is that the initiative stays readable at a glance and the ticket key stays secondary.

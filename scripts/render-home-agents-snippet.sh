@@ -10,7 +10,6 @@ agents_template="${script_dir}/${agents_template_relative}"
 
 repos_root='~/git'
 context_root='~/git/engineering-context'
-worktrees_root='~/worktrees'
 scratch_root='~/tmp/_ai_scratch'
 skills_root='~/.agents/skills'
 
@@ -22,9 +21,8 @@ Output the AGENTS.md snippet from templates/HOME.AGENTS.snippets.md with
 workstation placeholders replaced.
 
 Options:
-  --repos-root PATH      Code repository root. Default: ${repos_root}
+  --repos-root PATH      Repo containers root. Default: ${repos_root}
   --context-root PATH    Shared engineering context root. Default: ${context_root}
-  --worktrees-root PATH  Implementation worktrees root. Default: ${worktrees_root}
   --scratch-root PATH    Ephemeral scratch root. Default: ${scratch_root}
   --skills-root PATH     Installed skills root. Default: ${skills_root}
   --template PATH        Template file to render. Default: ${agents_template_relative} relative to this script.
@@ -49,11 +47,6 @@ while [ "$#" -gt 0 ]; do
     --context-root)
       require_value "$@"
       context_root="$2"
-      shift 2
-      ;;
-    --worktrees-root)
-      require_value "$@"
-      worktrees_root="$2"
       shift 2
       ;;
     --scratch-root)
@@ -116,7 +109,6 @@ awk '
 awk \
   -v repos_root="$repos_root" \
   -v context_root="$context_root" \
-  -v worktrees_root="$worktrees_root" \
   -v scratch_root="$scratch_root" \
   -v skills_root="$skills_root" '
   function replace_all(text, needle, replacement,    out, pos) {
@@ -131,7 +123,6 @@ awk \
   {
     $0 = replace_all($0, "<REPOS_ROOT>", repos_root)
     $0 = replace_all($0, "<CONTEXT_ROOT>", context_root)
-    $0 = replace_all($0, "<WORKTREES_ROOT>", worktrees_root)
     $0 = replace_all($0, "<SCRATCH_ROOT>", scratch_root)
     $0 = replace_all($0, "<SKILLS_ROOT>", skills_root)
     print

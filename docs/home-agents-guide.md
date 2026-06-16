@@ -1,12 +1,11 @@
-# `$HOME/AGENTS.md` Guide
+# `~/.codex/AGENTS.md` Guide
 
-`$HOME/AGENTS.md` should be a short operating map for the user's default agent behavior across repos. It should not be a giant manual. The goal is to tell the agent where to look, how the user organizes work, and where durable artifacts belong.
+`~/.codex/AGENTS.md` should be a short operating map for the user's default Codex behavior across repos. It should not be a giant manual. The goal is to tell the agent where to look, how the user organizes work, and where durable artifacts belong. When `~/.claude/CLAUDE.md` symlinks to it, Claude reads the same guidance.
 
 ## What Belongs In It
 
 - The user's chosen repo root examples
 - The user's chosen shared `engineering-context` root
-- The user's chosen worktrees root
 - The user's chosen scratch root
 - A short rule for where active execution artifacts live and where repo-local durable knowledge lives
 - A short outcome, success, and stop-rule reminder for using the smallest sufficient workflow
@@ -32,11 +31,6 @@ Examples for shared engineering context:
 - `~/git/engineering-context`
 - `~/src/engineering-context`
 - `~/work/engineering-context`
-
-Examples for implementation worktrees:
-
-- `~/worktrees`
-- `~/tmp/worktrees`
 
 Examples for scratch:
 
@@ -109,18 +103,25 @@ Examples:
 
 ## Implementation Workspace Guidance To Include
 
-Your home guidance should tell the agent to use git worktrees for implementation instead of branching directly in the repos root. This keeps the main checkouts clean and gives each initiative an isolated working copy.
+Your home guidance should tell the agent to use git worktrees for implementation instead of branching in the persistent default worktree. This keeps default-branch browsing clean and gives each initiative an isolated working copy.
 
 The worktree layout should look like:
 
 ```text
-<worktrees-root>/
-  NNNN/
-    <repo-a>/
-    <repo-b>/
+<repos-root>/
+  <repo-a>/
+    .git/
+    <default-branch>/
+    NNNN-<initiative>/
+  <repo-b>/
+    .git/
+    <default-branch>/
+    NNNN-<initiative>/
 ```
 
-The `NNNN` matches the initiative's sequence number in `engineering-context/active/`. The installed context helper at `<SKILLS_ROOT>/af-plan/scripts/init-initiative-context.sh` (or the matching `af-research` wrapper) creates or reuses the shared initiative folder during planning or research. The installed `af-implement` helper at `<SKILLS_ROOT>/af-implement/scripts/init-initiative.sh` then fetches repos and creates worktrees for that existing initiative. The installed `af-archive` helper at `<SKILLS_ROOT>/af-archive/scripts/archive-initiative.sh` handles cleanup: removes worktrees, deletes branches, and moves the initiative to `archive/`.
+The `NNNN` matches the initiative's sequence number in `engineering-context/active/`. The installed context helper at `<SKILLS_ROOT>/af-plan/scripts/init-initiative-context.sh` (or the matching `af-research` wrapper) creates or reuses the shared initiative folder during planning or research. The installed `af-implement` helper at `<SKILLS_ROOT>/af-implement/scripts/init-initiative.sh --repos-root <REPOS_ROOT> --context-root <CONTEXT_ROOT> --repo <repo> <NNNN-or-folder>` then fetches repos and creates worktrees only for repos needed by that existing initiative. The installed `af-archive` helper at `<SKILLS_ROOT>/af-archive/scripts/archive-initiative.sh` handles cleanup: removes worktrees, deletes branches, and moves the initiative to `archive/`.
+
+For managing repo containers, include the installed `af-workspace` helpers: `add-bare-repo.sh` (add or repair one repo, or many with `--from-manifest`), `list-workspace.sh` (list repo containers and their initiative worktrees), and `sync-workspace.sh` (fetch and fast-forward each default-branch worktree, then prune stale ones), all under `<SKILLS_ROOT>/af-workspace/scripts/`.
 
 ## Readability Guidance To Include
 
@@ -141,4 +142,4 @@ This section belongs in the home agent guidance because readability is a cross-c
 
 Use [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) as the single source of truth for the installed home guidance. After installation, replace every placeholder in `~/.codex/AGENTS.md` with real workstation paths and conventions.
 
-For the default layout used by this repo, run `scripts/render-home-agents-snippet.sh` from the repo root. It prints the snippet with `~/git`, `~/git/engineering-context`, `~/worktrees`, `~/tmp/_ai_scratch`, and `~/.agents/skills` already filled in.
+For the default layout used by this repo, run `scripts/render-home-agents-snippet.sh` from the repo root. It prints the snippet with `~/git`, `~/git/engineering-context`, `~/tmp/_ai_scratch`, and `~/.agents/skills` already filled in.

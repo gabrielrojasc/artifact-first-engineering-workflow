@@ -36,7 +36,7 @@ It will not:
 
 When those paths already exist, the installer prints a warning and tells you which doc to review so you can merge the workflow rules yourself.
 
-The installed `~/.codex/AGENTS.md` is a starter file, not a finished workstation config. It still contains placeholders such as `<REPOS_ROOT>`, `<CONTEXT_ROOT>`, `<WORKTREES_ROOT>`, `<SCRATCH_ROOT>`, and `<SKILLS_ROOT>`. Replace them explicitly after installation.
+The installed `~/.codex/AGENTS.md` is a starter file, not a finished workstation config. It still contains placeholders such as `<REPOS_ROOT>`, `<CONTEXT_ROOT>`, `<SCRATCH_ROOT>`, and `<SKILLS_ROOT>`. Replace them explicitly after installation.
 
 For the default workstation layout, run:
 
@@ -46,19 +46,43 @@ scripts/render-home-agents-snippet.sh
 
 The script prints the snippet from [`templates/HOME.AGENTS.snippets.md`](../templates/HOME.AGENTS.snippets.md) with these defaults:
 
-- `~/git` for code repositories
+- `~/git` for repo containers, with initiative worktrees inside each container
 - `~/git/engineering-context` for shared engineering context
-- `~/worktrees` for implementation worktrees
 - `~/tmp/_ai_scratch` for ephemeral scratch work
 - `~/.agents/skills` for installed workflow skills
 
 When `~/.claude/CLAUDE.md` is created by the installer, it is intentionally a symlink to `~/.codex/AGENTS.md` so both tools read the same guidance file.
+
+## Bare Repo Setup
+
+The repo-container layout keeps each repository under `<REPOS_ROOT>/<repo>/` with a bare `.git/`, a persistent default-branch worktree, and initiative worktrees as siblings.
+
+This is the current steady-state workspace model. The workflow no longer creates a worktree for every repo up front under a separate worktrees root. Create initiative worktrees only for the repos needed by the current plan, and add another repo later if scope expands.
+
+Use the installed `af-workspace` helpers to manage repo containers:
+
+```bash
+# Add or repair one repo
+$HOME/.agents/skills/af-workspace/scripts/add-bare-repo.sh --repos-root <REPOS_ROOT> <repo-url>
+
+# Add or repair many repos from a manifest ('<repo-url> [repo-name]' per line)
+$HOME/.agents/skills/af-workspace/scripts/add-bare-repo.sh --repos-root <REPOS_ROOT> --from-manifest repos.txt
+
+# List repo containers and their initiative worktrees
+$HOME/.agents/skills/af-workspace/scripts/list-workspace.sh --repos-root <REPOS_ROOT> --context-root <CONTEXT_ROOT>
+
+# Fetch and fast-forward every default-branch worktree, then prune stale ones
+$HOME/.agents/skills/af-workspace/scripts/sync-workspace.sh --repos-root <REPOS_ROOT> --context-root <CONTEXT_ROOT>
+```
+
+The `add-bare-repo.sh` entry point is also available in this repo at [`scripts/add-bare-repo.sh`](../scripts/add-bare-repo.sh) for repository-local setup.
 
 ## Installing The Skills
 
 The canonical workflow definitions live in these folders:
 
 - [`skills/af-research/`](../skills/af-research/)
+- [`skills/af-workspace/`](../skills/af-workspace/)
 - [`skills/af-plan/`](../skills/af-plan/)
 - [`skills/af-implement/`](../skills/af-implement/)
 - [`skills/af-iterate/`](../skills/af-iterate/)
@@ -251,7 +275,7 @@ Implement phase by phase from an approved plan artifact.
 
 ### Implementation Workspace
 
-Do not create branches or edit code directly in the repos root. Use git worktrees so each initiative gets an isolated working copy and the main checkouts stay clean on their default branch.
+Do not create branches or edit code in the persistent default worktree. Use git worktrees so each initiative gets an isolated working copy and default-branch browsing stays clean.
 
 Initialize or reuse the shared initiative folder during research or planning:
 
@@ -267,18 +291,20 @@ Then run the `af-implement` helper script to create worktrees for that initiativ
 skills/af-implement/scripts/init-initiative.sh \
   --repos-root <REPOS_ROOT> \
   --context-root <CONTEXT_ROOT> \
-  --worktrees-root <WORKTREES_ROOT> \
+  --repo <repo-name> [--repo <repo-name> ...] \
   [--branch-prefix feature] \
-  <initiative-name> [ticket-key]
+  <NNNN or folder-name or initiative-name> [ticket-key]
 ```
 
 The script:
 
 1. Resolves the existing initiative folder and sequence number from the shared context root.
 2. Ensures the implementation `status/` directory exists.
-3. Processes each repo under the repos root except the configured context repo.
-4. Fetches and creates worktrees in parallel so large multi-repo setups finish faster.
-5. Creates a worktree per repo under `<worktrees-root>/NNNN/<repo>/` with a properly named branch.
+3. Processes only the requested repo containers.
+4. Fetches and creates requested worktrees in parallel so multi-repo setup stays fast.
+5. Creates a worktree per repo under `<repos-root>/<repo>/NNNN-<initiative>/` with a properly named branch.
+
+If implementation later needs another repo, rerun the helper with another `--repo <repo-name>`.
 
 All implementation happens inside the worktrees. Branch naming follows the repo's branch prefix convention (`feature/`, `bugfix/`, `hotfix/`, etc.).
 
@@ -288,8 +314,7 @@ Cleanup: run the `af-archive` helper script to remove worktrees, delete local br
 skills/af-archive/scripts/archive-initiative.sh \
   --repos-root <REPOS_ROOT> \
   --context-root <CONTEXT_ROOT> \
-  --worktrees-root <WORKTREES_ROOT> \
-  [--delete-remote] <NNNN>
+  <NNNN>
 ```
 
 ### Rendering A Readable HTML View
