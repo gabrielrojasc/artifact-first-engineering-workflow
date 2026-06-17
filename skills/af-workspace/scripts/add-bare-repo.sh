@@ -187,6 +187,14 @@ configure_bare_repo() {
   git -C "$repo_path" fetch origin --quiet
 }
 
+configure_default_branch_tracking() {
+  local repo_path="$1"
+  local default_branch="$2"
+
+  log_command "git -C ${repo_path} branch --set-upstream-to=origin/${default_branch} ${default_branch}"
+  git -C "$repo_path" branch --set-upstream-to="origin/${default_branch}" "$default_branch" >/dev/null
+}
+
 ensure_default_worktree() {
   local repo_path="$1"
   local default_branch="$2"
@@ -194,6 +202,8 @@ ensure_default_worktree() {
 
   if git -C "$repo_path" worktree list --porcelain | grep -Fqx "worktree ${default_path}"; then
     if [ -d "$default_path" ]; then
+      configure_default_branch_tracking "$repo_path" "$default_branch"
+
       if [ -n "$(git -C "$default_path" status --porcelain 2>/dev/null)" ]; then
         log_error "Default worktree has local changes: ${default_path}"
         return 1
@@ -227,6 +237,8 @@ ensure_default_worktree() {
     log_error "Local default branch cannot fast-forward to origin/${default_branch}."
     return 1
   fi
+
+  configure_default_branch_tracking "$repo_path" "$default_branch"
 
   log_command "git -C ${repo_path} worktree add ${default_path} ${default_branch}"
   git -C "$repo_path" worktree add "$default_path" "$default_branch" >/dev/null
