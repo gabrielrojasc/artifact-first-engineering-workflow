@@ -84,6 +84,36 @@ tbody tr:hover { background:var(--bg-elev); }
 .mermaid { margin:0 0 1em; padding:20px; background:var(--bg-elev); border:1px solid var(--border);
   border-radius:var(--radius); text-align:center; overflow:auto; }
 .mermaid svg { max-width:100%; height:auto; }
+.zoomable { cursor:zoom-in; }
+.lightbox { position:fixed; inset:0; z-index:2000; display:none; }
+.lightbox.open { display:block; }
+.lightbox::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,.85); }
+.lightbox-scroll { position:absolute; inset:0; overflow:auto; -webkit-overflow-scrolling:touch; }
+.lightbox-stage { box-sizing:border-box; min-height:100%; min-width:100%; width:max-content;
+  display:flex; align-items:center; justify-content:center; padding:48px 40px; }
+.lightbox-content { position:relative; cursor:zoom-in; }
+.lightbox-stage.zoomed .lightbox-content { cursor:zoom-out; }
+.lightbox-content img { display:block; max-width:92vw; max-height:86vh; width:auto; height:auto; border-radius:var(--radius); }
+.lightbox-content.is-diagram { background:var(--bg-elev); border:1px solid var(--border);
+  border-radius:var(--radius); padding:26px; }
+.lightbox-content.is-diagram svg { display:block; height:auto; max-width:none; }
+.lightbox.has-zoom .lightbox-scroll { overflow:hidden; cursor:grab; touch-action:none; }
+.lightbox.has-zoom .lightbox-scroll.grabbing { cursor:grabbing; }
+.lightbox.has-zoom .lightbox-stage { display:block; width:auto; min-width:0; min-height:0; padding:0; cursor:inherit; }
+.lightbox.has-zoom .lightbox-content { position:absolute; top:0; left:0; margin:0;
+  transform-origin:0 0; will-change:transform; cursor:inherit; }
+.lightbox-close { position:fixed; top:16px; right:18px; z-index:2; width:40px; height:40px; border-radius:10px;
+  background:var(--bg-elev); color:var(--fg-strong); border:1px solid var(--border); font-size:22px; line-height:1; cursor:pointer; }
+.lightbox-close:hover { border-color:var(--accent); color:var(--accent); }
+.lightbox-hint { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:2;
+  font-family:var(--font-mono); font-size:12px; color:var(--fg-muted); background:var(--bg-elev);
+  border:1px solid var(--border); border-radius:2em; padding:5px 14px; pointer-events:none; }
+.lightbox.has-zoom .lightbox-hint { display:none; }
+.lightbox-zoom { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:2; display:none; gap:6px; }
+.lightbox.has-zoom .lightbox-zoom { display:flex; }
+.lightbox-zoom button { width:36px; height:36px; border-radius:9px; background:var(--bg-elev);
+  color:var(--fg-strong); border:1px solid var(--border); font-size:18px; line-height:1; cursor:pointer; }
+.lightbox-zoom button:hover { border-color:var(--accent); color:var(--accent); }
 .pill { display:inline-block; font-family:var(--font-head); font-size:11px; font-weight:700;
   letter-spacing:.04em; padding:3px 10px; border-radius:2em; text-transform:uppercase; white-space:nowrap; }
 .pill.ok{ background:var(--ok-bg); color:var(--ok-fg); }
@@ -184,6 +214,179 @@ tbody tr:hover { background:var(--bg-elev); }
       if (!c.classList.contains("language-mermaid")) { try { hljs.highlightElement(c); } catch (e) {} }
     });
   }
+
+  // Lightbox: click images or Mermaid diagrams to expand.
+  (function () {
+    var overlay = document.createElement("div");
+    overlay.className = "lightbox";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.innerHTML =
+      '<div class="lightbox-scroll"><div class="lightbox-stage">' +
+      '<div class="lightbox-content"></div></div></div>' +
+      '<button class="lightbox-close" type="button" aria-label="Close" title="Close">\u00d7</button>' +
+      '<div class="lightbox-hint">Click to zoom \u00b7 Esc to close</div>' +
+      '<div class="lightbox-zoom">' +
+      '<button class="lb-zout" type="button" aria-label="Zoom out" title="Zoom out">\u2212</button>' +
+      '<button class="lb-zreset" type="button" aria-label="Reset zoom" title="Reset zoom">\u21ba</button>' +
+      '<button class="lb-zin" type="button" aria-label="Zoom in" title="Zoom in">+</button></div>';
+    document.body.appendChild(overlay);
+    var scroll = overlay.querySelector(".lightbox-scroll");
+    var stage = overlay.querySelector(".lightbox-stage");
+    var content = overlay.querySelector(".lightbox-content");
+    var closeBtn = overlay.querySelector(".lightbox-close");
+
+    var ZOOM_STEP = 1.3, WHEEL_K = 0.001, MIN_FACTOR = 0.4, MAX_FACTOR = 8;
+    var scale = 1, fitScale = 1, tx = 0, ty = 0, cw = 0, ch = 0;
+    function clampScale(v) { return Math.min(fitScale * MAX_FACTOR, Math.max(fitScale * MIN_FACTOR, v)); }
+    function applyTransform() {
+      content.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + scale + ")";
+    }
+    function fitDiagram() {
+      var vw = scroll.clientWidth, vh = scroll.clientHeight;
+      cw = content.offsetWidth; ch = content.offsetHeight;
+      if (!cw || !ch) { fitScale = scale = 1; tx = 0; ty = 0; applyTransform(); return; }
+      fitScale = scale = Math.min((vw * 0.94) / cw, (vh * 0.92) / ch, 3);
+      tx = (vw - cw * scale) / 2; ty = (vh - ch * scale) / 2;
+      applyTransform();
+    }
+    function zoomAt(cx, cy, factor) {
+      var rect = scroll.getBoundingClientRect();
+      var ox = cx - rect.left, oy = cy - rect.top;
+      var ns = clampScale(scale * factor); factor = ns / scale;
+      tx = ox - (ox - tx) * factor; ty = oy - (oy - ty) * factor; scale = ns;
+      applyTransform();
+    }
+    function zoomCenter(factor) {
+      var rect = scroll.getBoundingClientRect();
+      zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, factor);
+    }
+
+    function open(node, isDiagram) {
+      content.innerHTML = "";
+      content.className = "lightbox-content" + (isDiagram ? " is-diagram" : "");
+      content.style.transform = "";
+      content.style.width = "";
+      moved = false;
+      stage.classList.remove("zoomed");
+      content.appendChild(node);
+      overlay.classList.toggle("has-zoom", isDiagram);
+      overlay.classList.add("open");
+      document.body.style.overflow = "hidden";
+      if (isDiagram) { scale = 1; tx = 0; ty = 0; fitDiagram(); }
+    }
+    function close() {
+      overlay.classList.remove("open");
+      content.innerHTML = "";
+      content.style.transform = "";
+      content.style.width = "";
+      document.body.style.overflow = "";
+    }
+
+    // Images: click toggles a real magnification (with scroll/pan).
+    content.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (overlay.classList.contains("has-zoom")) return;
+      var img = content.querySelector("img");
+      if (!img) return;
+      var zoomIn = stage.classList.toggle("zoomed");
+      if (zoomIn) {
+        var w = img.clientWidth;
+        img.style.maxWidth = "none";
+        img.style.maxHeight = "none";
+        img.style.height = "auto";
+        img.style.width = Math.round(w * 2.5) + "px";
+      } else {
+        img.style.width = ""; img.style.height = "";
+        img.style.maxWidth = ""; img.style.maxHeight = "";
+      }
+      scroll.scrollTop = 0; scroll.scrollLeft = 0;
+    });
+
+    // Diagrams: drag to pan, wheel to zoom toward the cursor.
+    var dragging = false, moved = false, lastX = 0, lastY = 0;
+    scroll.addEventListener("pointerdown", function (e) {
+      if (!overlay.classList.contains("has-zoom")) return;
+      dragging = true; moved = false; lastX = e.clientX; lastY = e.clientY;
+      scroll.classList.add("grabbing");
+      try { scroll.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    scroll.addEventListener("pointermove", function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - lastX, dy = e.clientY - lastY;
+      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
+      tx += dx; ty += dy; lastX = e.clientX; lastY = e.clientY;
+      applyTransform();
+    });
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false; scroll.classList.remove("grabbing");
+      try { scroll.releasePointerCapture(e.pointerId); } catch (err) {}
+    }
+    scroll.addEventListener("pointerup", endDrag);
+    scroll.addEventListener("pointercancel", endDrag);
+    scroll.addEventListener("wheel", function (e) {
+      if (!overlay.classList.contains("has-zoom")) return;
+      e.preventDefault();
+      var d = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1);
+      var factor = Math.min(1.18, Math.max(0.85, Math.exp(-d * WHEEL_K)));
+      zoomAt(e.clientX, e.clientY, factor);
+    }, { passive: false });
+
+    // Close only when clicking outside the media (never on the image/diagram itself).
+    scroll.addEventListener("click", function (e) {
+      if (moved) { moved = false; return; }
+      var box = content.getBoundingClientRect();
+      var onMedia = e.clientX >= box.left && e.clientX <= box.right &&
+                    e.clientY >= box.top && e.clientY <= box.bottom;
+      if (!onMedia) close();
+    });
+    closeBtn.addEventListener("click", close);
+    overlay.querySelector(".lb-zin").addEventListener("click", function (e) { e.stopPropagation(); zoomCenter(ZOOM_STEP); });
+    overlay.querySelector(".lb-zout").addEventListener("click", function (e) { e.stopPropagation(); zoomCenter(1 / ZOOM_STEP); });
+    overlay.querySelector(".lb-zreset").addEventListener("click", function (e) { e.stopPropagation(); fitDiagram(); });
+    document.addEventListener("keydown", function (e) {
+      if (!overlay.classList.contains("open")) return;
+      if (e.key === "Escape") { close(); return; }
+      if (overlay.classList.contains("has-zoom")) {
+        if (e.key === "+" || e.key === "=") { zoomCenter(ZOOM_STEP); }
+        else if (e.key === "-" || e.key === "_") { zoomCenter(1 / ZOOM_STEP); }
+        else if (e.key === "0") { fitDiagram(); }
+      }
+    });
+
+    docEl.querySelectorAll("img").forEach(function (img) {
+      if (img.dataset.afZoom) return;
+      img.dataset.afZoom = "1";
+      img.classList.add("zoomable");
+      img.addEventListener("click", function () {
+        var clone = new Image();
+        clone.src = img.currentSrc || img.src;
+        clone.alt = img.alt || "";
+        open(clone, false);
+      });
+    });
+
+    docEl.querySelectorAll(".mermaid").forEach(function (d) {
+      if (d.dataset.afZoom) return;
+      d.dataset.afZoom = "1";
+      d.classList.add("zoomable");
+      d.addEventListener("click", function () {
+        var svg = d.querySelector("svg");
+        if (!svg) return;
+        var natW = (svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width)
+          || svg.getBoundingClientRect().width || 800;
+        var clone = svg.cloneNode(true);
+        clone.removeAttribute("width");
+        clone.removeAttribute("height");
+        clone.style.maxWidth = "none";
+        clone.style.height = "auto";
+        clone.style.display = "block";
+        clone.style.width = Math.round(natW) + "px";
+        open(clone, true);
+      });
+    });
+  })();
 
   // Auto-color status words in the last table column.
   var map = [
