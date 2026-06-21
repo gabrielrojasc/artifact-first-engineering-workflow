@@ -23,10 +23,11 @@ Read the existing plan completely, then listen to the human's change intent. Res
 
 Have a focused conversation to reach alignment on the change. This is the core of the skill -- most of the work happens here, not in the edit step.
 
-- Surface ambiguities, trade-offs, and downstream effects as questions.
-- If the intent could be interpreted multiple ways, present the options concisely with pros/cons.
+- Surface ambiguities, trade-offs, and downstream effects one question at a time, walking each branch of the change and resolving dependencies between decisions one by one. Serial questioning is the default because focused, one-at-a-time questions draw out more considered answers and let each answer reshape the next; batch only when the human clearly already holds several independent answers.
+- For each question, provide your recommended answer, and if the intent could be interpreted multiple ways, lay out the options concisely with pros/cons before recommending one.
+- If a question can be answered by exploring the codebase or existing artifacts, do that instead of asking.
 - If the change requires new evidence (ownership, boundaries, contracts), delegate inline research to sub-agent(s) following af-research principles and bring findings back into the conversation.
-- Keep each exchange short. State your read, ask a specific question, and wait.
+- Keep each exchange short. State your read, ask a single specific question, and wait for the response before asking the next.
 - Do not accumulate a long list of proposed changes silently. Surface each decision point as you reach it.
 
 The conversation continues until both sides agree on what changes to make and why.

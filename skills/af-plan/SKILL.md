@@ -42,7 +42,7 @@ Low-risk work means single repo, reversible, no schema/API/event/contract change
 
 For low-risk work, Questioning and Design Discussion may be compressed into one concise pre-proposal summary. This compression applies only to pre-proposal conversation. Structure Approval still requires a Markdown proposal artifact and explicit approval, and the final plan remains a first-class artifact.
 
-**Questioning**: When run as a separate step, present your informed understanding of the task and surface design decisions as explicit options (Q1: A or B? Q2: X or Y?). Do not proceed until the human selects directions.
+**Questioning**: Interview the human one question at a time, walking down each branch of the design tree and resolving dependencies between decisions one by one until you reach shared understanding. Ask a single question, provide your recommended answer, and wait for the response before asking the next. Serial questioning is the default because focused, one-at-a-time questions draw out more considered answers and let each answer reshape the next; batch only when the human clearly already holds several independent answers. If a question can be answered by exploring the codebase or existing research artifacts, do that instead of asking. Do not proceed until the open decisions are resolved.
 
 **Design Discussion**: When run as a separate step, present current state, desired end state, discovered patterns, and design options with pros/cons in-chat. The human picks the direction. Resolved decisions get recorded in the proposal and then in the final plan.
 
