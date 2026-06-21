@@ -48,7 +48,7 @@ $HOME/.agents/skills/af-implement/scripts/init-initiative.sh \
 Prefer the sequence number (`NNNN`) when the initiative folder already exists.
 Pass only the repos needed for the current work. If a repo was missed, rerun the helper with another `--repo <repo-name>`.
 
-If worktrees for this initiative already exist (e.g., resuming from a handoff), verify they are up to date with the remote default branch and skip creation.
+If worktrees for this initiative already exist (e.g., resuming prior work), verify they are up to date with the remote default branch and skip creation.
 
 If the initiative folder does not exist yet, create it first with the planning or research context helper:
 

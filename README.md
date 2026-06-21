@@ -50,7 +50,6 @@ The `af` prefix stands for `artifact-first`.
 - [`af-plan`](skills/af-plan/SKILL.md): Create mini-plans for `PI` (`Plan -> Implement`) work and phased plans for `RPI` (`Research -> Plan -> Implement`) work using QRSPI-style interactive alignment and inline research when needed.
 - [`af-implement`](skills/af-implement/SKILL.md): Execute an approved artifact-first plan phase by phase with explicit exits back to planning or research.
 - [`af-iterate`](skills/af-iterate/SKILL.md): Apply targeted revisions to an existing artifact-first plan when the structure still holds but specific sections need updates.
-- [`af-handoff`](skills/af-handoff/SKILL.md): Transfer working context between agent sessions with compact handoff documents for create and resume flows.
 - [`af-archive`](skills/af-archive/SKILL.md): Archive completed or abandoned initiatives by removing worktrees, cleaning branches, and moving context from active to archive.
 - [`gh-review-comments`](skills/gh-review-comments/SKILL.md): Fetch PR review comments, assess fix-versus-dismiss decisions, and produce an approval proposal before changing code or replying on GitHub.
 

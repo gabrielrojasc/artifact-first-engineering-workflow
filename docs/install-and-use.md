@@ -1,6 +1,6 @@
 # Install And Use
 
-This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills for research, planning, implementation, plan iteration, session handoff, and PR review-comment triage. Planning follows a QRSPI-style path: Questions, Research when needed, Design, Structure, and Plan before implementation. `PI` (`Plan -> Implement`) and `RPI` (`Research -> Plan -> Implement`) remain useful shorthand for the two common execution paths.
+This package is designed to be cloned, read, and copied from. It is intentionally light on tooling. The core deliverable is a repeatable artifact-first layout and a set of skills for research, planning, implementation, plan iteration, and PR review-comment triage. Planning follows a QRSPI-style path: Questions, Research when needed, Design, Structure, and Plan before implementation. `PI` (`Plan -> Implement`) and `RPI` (`Research -> Plan -> Implement`) remain useful shorthand for the two common execution paths.
 
 Here, `artifact-first` means the durable file is the source of truth. Active plans, research notes, status artifacts, and decisions should exist as versioned artifacts that agents and humans can reuse; repo-local docs should preserve the durable knowledge worth carrying forward. Chat should support those artifacts, not replace them.
 
@@ -86,7 +86,6 @@ The canonical workflow definitions live in these folders:
 - [`skills/af-plan/`](../skills/af-plan/)
 - [`skills/af-implement/`](../skills/af-implement/)
 - [`skills/af-iterate/`](../skills/af-iterate/)
-- [`skills/af-handoff/`](../skills/af-handoff/)
 - [`skills/af-archive/`](../skills/af-archive/)
 - [`skills/gh-review-comments/`](../skills/gh-review-comments/)
 
@@ -98,7 +97,7 @@ Some skills also contain:
 
 - local `references/` files so the skill can travel independently
 - local `scripts/` helpers, with any shared helper library vendored under `scripts/lib/` so the skill has no external dependencies on this repo
-- a `scripts/render-artifact.sh` helper and `scripts/lib/artifact-template.html` for the artifact-producing skills (`af-research`, `af-plan`, `af-implement`, `af-iterate`, `af-handoff`), vendored byte-identically so each skill renders its HTML view independently
+- a `scripts/render-artifact.sh` helper and `scripts/lib/artifact-template.html` for the artifact-producing skills (`af-research`, `af-plan`, `af-implement`, `af-iterate`), vendored byte-identically so each skill renders its HTML view independently
 
 The installer links each of these skill folders individually into `~/.agents/skills/` so unrelated skills in that directory are left alone.
 
@@ -319,7 +318,7 @@ skills/af-archive/scripts/archive-initiative.sh \
 
 ### Rendering A Readable HTML View
 
-Markdown stays the source of truth for every artifact. The HTML render is a generated, human-friendly view -- it is never hand-edited and never replaces the Markdown. The artifact-producing skills (`af-research`, `af-plan`, `af-implement`, `af-iterate`, `af-handoff`) each ship a `render-artifact.sh` helper that produces an `<artifact>.html` sibling next to the Markdown:
+Markdown stays the source of truth for every artifact. The HTML render is a generated, human-friendly view -- it is never hand-edited and never replaces the Markdown. The artifact-producing skills (`af-research`, `af-plan`, `af-implement`, `af-iterate`) each ship a `render-artifact.sh` helper that produces an `<artifact>.html` sibling next to the Markdown:
 
 ```bash
 $HOME/.agents/skills/<skill>/scripts/render-artifact.sh <artifact.md>
