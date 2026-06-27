@@ -54,6 +54,8 @@ $HOME/.agents/skills/af-research/scripts/init-initiative-context.sh \
 8. Compact the findings into a durable Markdown artifact.
 9. End with a clear readiness call and next step.
 
+If evidence cannot resolve a planning-blocking ambiguity, stop and surface exactly one narrow question with your recommended answer before claiming the research is ready. If the ambiguity does not block the current research answer but may affect later planning, record it as an open planning question with the recommended default. Do not turn research into design alignment.
+
 ## Sub-Agent Delegation
 
 When research scope is broad -- multiple repos, large codebase surface, or several disjoint questions -- delegate bounded discovery tasks to sub-agents rather than consuming the main agent's context on raw exploration.

@@ -187,7 +187,8 @@ When running **autonomously** (no human in the loop):
 When running **interactively** (human available):
 
 - Use the drift decision gate first. Only escalate to the human if the gate produces a borderline result.
-- Prefer a short, specific question over an open-ended one.
+- When a drift, recovery, ownership, or boundary gate requires human escalation, ask exactly one narrow question, include the recommended safe answer, and wait.
+- Prefer evidence-backed recovery paths over broad design reopening.
 
 ## Output
 
